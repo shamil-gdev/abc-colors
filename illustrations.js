@@ -763,147 +763,207 @@ window.PARK_ART = {
     </svg>`;
   },
 
-  // Full-bleed Sunny Amusement Park Background (viewBox="0 0 1200 820")
+  // Wide Panoramic Scrollable Amusement Park Background (viewBox="0 0 2200 820")
   parkScenerySvg() {
-    return `<svg viewBox="0 0 1200 820" preserveAspectRatio="xMidYMid slice" class="park-scenery-svg">
+    return `<svg viewBox="0 0 2200 820" preserveAspectRatio="xMinYMid slice" class="park-scenery-svg">
       <defs>
         <linearGradient id="parkSkyGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#4AC7FF"/>
-          <stop offset="52%" stop-color="#9BE8FF"/>
-          <stop offset="100%" stop-color="#E4FBFF"/>
+          <stop offset="56%" stop-color="#A3ECFF"/>
+          <stop offset="100%" stop-color="#E8FCFF"/>
         </linearGradient>
         <linearGradient id="farHillGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#7EE27A"/>
-          <stop offset="100%" stop-color="#4CC458"/>
-        </linearGradient>
-        <linearGradient id="midHillGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#5CD85A"/>
-          <stop offset="100%" stop-color="#2EB045"/>
+          <stop offset="0%" stop-color="#87E87D"/>
+          <stop offset="100%" stop-color="#52C85D"/>
         </linearGradient>
         <linearGradient id="nearLawnGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#49CF52"/>
-          <stop offset="100%" stop-color="#269B3D"/>
+          <stop offset="0%" stop-color="#58DA5B"/>
+          <stop offset="100%" stop-color="#2EAD44"/>
         </linearGradient>
         <linearGradient id="sandPathGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#FFE89E"/>
-          <stop offset="100%" stop-color="#F7C968"/>
+          <stop offset="0%" stop-color="#FFECA8"/>
+          <stop offset="100%" stop-color="#F5C967"/>
         </linearGradient>
       </defs>
 
-      <!-- Sunny Sky -->
-      <rect width="1200" height="820" fill="url(#parkSkyGrad)"/>
+      <!-- Sunny Panoramic Sky -->
+      <rect width="2200" height="820" fill="url(#parkSkyGrad)"/>
 
-      <!-- Warm Glowing Sun -->
-      <circle cx="1060" cy="108" r="78" fill="#FFF3B0" opacity="0.45"/>
-      <circle cx="1060" cy="108" r="52" fill="#FFE047"/>
+      <!-- Glowing Sun -->
+      <circle cx="1980" cy="108" r="82" fill="#FFF3B0" opacity="0.45"/>
+      <circle cx="1980" cy="108" r="54" fill="#FFE047"/>
 
-      <!-- Fluffy Clouds -->
-      <g fill="#FFFFFF" opacity="0.92">
-        <path d="M90 140 Q90 112 118 112 Q132 90 162 94 Q188 94 196 116 Q220 118 220 140 Z"/>
-        <path d="M450 106 Q450 82 476 82 Q492 60 520 66 Q544 68 552 88 Q572 90 572 106 Z" opacity="0.85"/>
-        <path d="M780 150 Q780 126 806 126 Q820 104 848 108 Q872 110 878 130 Q898 132 898 150 Z" opacity="0.88"/>
+      <!-- Fluffy Cloud Bank across horizon -->
+      <g fill="#FFFFFF" opacity="0.88">
+        <path d="M80 140 Q80 110 112 110 Q128 86 160 92 Q188 94 196 116 Q224 118 224 140 Z"/>
+        <path d="M560 112 Q560 86 588 86 Q604 64 636 70 Q662 72 670 92 Q694 94 694 112 Z"/>
+        <path d="M1140 138 Q1140 112 1170 112 Q1186 90 1218 96 Q1244 98 1252 118 Q1276 120 1276 138 Z"/>
+        <path d="M1610 106 Q1610 82 1638 82 Q1654 62 1684 68 Q1708 70 1716 88 Q1738 90 1738 106 Z"/>
       </g>
 
-      <!-- Subtle Pastel Rollercoaster Tracks & Loop in Far Background -->
-      <g opacity="0.52" stroke="#85B8E8" fill="none">
-        <path d="M-20 350 Q110 210 230 310 T470 285 T720 330" stroke-width="6"/>
-        <!-- Vertical struts -->
-        <path d="M80 262 L80 390 M130 250 L130 390 M180 272 L180 390 M340 280 L340 390 M390 264 L390 390 M440 276 L440 390" stroke-width="3"/>
-        <!-- Coaster Loop -->
-        <circle cx="285" cy="272" r="46" stroke-width="5.5"/>
-        <!-- Tiny pastel coaster train on crest -->
-        <rect x="112" y="238" width="22" height="12" rx="5" fill="#FF6B8B" stroke="none"/>
-        <rect x="137" y="241" width="20" height="11" rx="5" fill="#FFD600" stroke="none"/>
+      <!-- Hot Air Balloons in the Sky (inspired by Duck Booth reference!) -->
+      <g transform="translate(470, 88)">
+        <ellipse cx="0" cy="0" rx="22" ry="26" fill="#FF6B9E"/>
+        <path d="M-8 -24 Q0 0 -8 24 M8 -24 Q0 0 8 24" stroke="#FF9EC0" stroke-width="4" fill="none"/>
+        <rect x="-7" y="28" width="14" height="10" rx="3" fill="#8C5230"/>
+      </g>
+      <g transform="translate(1030, 114)">
+        <ellipse cx="0" cy="0" rx="20" ry="24" fill="#9055FF"/>
+        <path d="M-7 -22 Q0 0 -7 22 M7 -22 Q0 0 7 22" stroke="#BFA0FF" stroke-width="3.5" fill="none"/>
+        <rect x="-6" y="26" width="12" height="9" rx="3" fill="#8C5230"/>
+      </g>
+      <g transform="translate(1520, 96)">
+        <ellipse cx="0" cy="0" rx="21" ry="25" fill="#FFB800"/>
+        <path d="M-7 -23 Q0 0 -7 23 M7 -23 Q0 0 7 23" stroke="#FFE066" stroke-width="3.5" fill="none"/>
+        <rect x="-6" y="27" width="12" height="9" rx="3" fill="#8C5230"/>
       </g>
 
-      <!-- Far Background Pastel Ferris Wheel -->
-      <g transform="translate(935, 255)" opacity="0.68">
-        <line x1="0" y1="0" x2="-46" y2="120" stroke="#7AAEE0" stroke-width="6" stroke-linecap="round"/>
-        <line x1="0" y1="0" x2="46" y2="120" stroke="#7AAEE0" stroke-width="6" stroke-linecap="round"/>
+      <!-- Subtle Pastel Rollercoaster Tracks & Loops along Horizon -->
+      <g opacity="0.46" stroke="#85BCEB" fill="none">
+        <path d="M-20 355 Q130 220 270 315 T570 285 T890 335 T1230 275 T1570 330 T1920 275 T2220 335" stroke-width="6"/>
+        <circle cx="330" cy="272" r="46" stroke-width="5.5"/>
+        <circle cx="1360" cy="274" r="48" stroke-width="5.5"/>
+        <path d="M120 275 L120 400 M200 265 L200 400 M480 280 L480 400 M740 290 L740 400 M1120 285 L1120 400 M1520 295 L1520 400 M1840 275 L1840 400" stroke-width="3"/>
+      </g>
+
+      <!-- Pastel Ferris Wheel in Far Background -->
+      <g transform="translate(1745, 255)" opacity="0.68">
+        <line x1="0" y1="0" x2="-48" y2="128" stroke="#7AAEE0" stroke-width="6" stroke-linecap="round"/>
+        <line x1="0" y1="0" x2="48" y2="128" stroke="#7AAEE0" stroke-width="6" stroke-linecap="round"/>
         <circle cx="0" cy="0" r="82" stroke="#FFFFFF" stroke-width="5" fill="none"/>
-        <circle cx="0" cy="0" r="62" stroke="#99C7F0" stroke-width="2.5" fill="none"/>
         <g stroke="#99C7F0" stroke-width="2.5">
-          <line x1="-82" y1="0" x2="82" y2="0"/>
-          <line x1="0" y1="-82" x2="0" y2="82"/>
-          <line x1="-58" y1="-58" x2="58" y2="58"/>
-          <line x1="-58" y1="58" x2="58" y2="-58"/>
+          <line x1="-82" y1="0" x2="82" y2="0"/><line x1="0" y1="-82" x2="0" y2="82"/>
+          <line x1="-58" y1="-58" x2="58" y2="58"/><line x1="-58" y1="58" x2="58" y2="-58"/>
         </g>
         <circle cx="0" cy="0" r="10" fill="#FFD600"/>
-        <!-- Colorful Ferris Gondolas -->
         <rect x="-9" y="-92" width="18" height="14" rx="6" fill="#FF5D8F"/>
         <rect x="74" y="-7" width="18" height="14" rx="6" fill="#FFB800"/>
         <rect x="-9" y="76" width="18" height="14" rx="6" fill="#22C6FF"/>
         <rect x="-92" y="-7" width="18" height="14" rx="6" fill="#8C4BFF"/>
         <rect x="49" y="-66" width="16" height="13" rx="5" fill="#24C958"/>
         <rect x="-65" y="-66" width="16" height="13" rx="5" fill="#FF8A00"/>
-        <rect x="49" y="52" width="16" height="13" rx="5" fill="#FF5E3A"/>
-        <rect x="-65" y="52" width="16" height="13" rx="5" fill="#FFD600"/>
       </g>
 
-      <!-- Distant Rolling Hills -->
-      <path d="M0 390 Q240 315 530 370 T1200 355 L1200 820 L0 820 Z" fill="url(#farHillGrad)"/>
+      <!-- Rolling Green Hills -->
+      <path d="M0 375 Q360 315 740 365 T1480 355 T2200 370 L2200 820 L0 820 Z" fill="url(#farHillGrad)"/>
 
-      <!-- Colorful Striped Circus Tents with Flags on Distant Hills -->
-      <g transform="translate(565, 298)">
-        <line x1="36" y1="2" x2="36" y2="-18" stroke="#8C5230" stroke-width="3"/>
-        <polygon points="36,-18 56,-11 36,-4" fill="#FF3B30"/>
-        <polygon points="0,48 36,2 72,48" fill="#FFFFFF"/>
-        <polygon points="14,48 36,2 30,48" fill="#FF3B5C"/>
-        <polygon points="42,48 36,2 58,48" fill="#FF3B5C"/>
-        <rect x="6" y="48" width="60" height="24" rx="3" fill="#FFF0F5"/>
-        <rect x="18" y="48" width="12" height="24" fill="#FF3B5C"/>
-        <rect x="42" y="48" width="12" height="24" fill="#FF3B5C"/>
+      <!-- Distant Circus Tents & Fountain Details -->
+      <g transform="translate(880, 304)">
+        <line x1="34" y1="2" x2="34" y2="-16" stroke="#8C5230" stroke-width="3"/>
+        <polygon points="34,-16 52,-10 34,-4" fill="#FF3B30"/>
+        <polygon points="0,44 34,2 68,44" fill="#FFFFFF"/>
+        <polygon points="14,44 34,2 28,44" fill="#FF3B5C"/>
+        <polygon points="40,44 34,2 54,44" fill="#FF3B5C"/>
+        <rect x="6" y="44" width="56" height="22" rx="3" fill="#FFF0F5"/>
       </g>
 
-      <g transform="translate(730, 316) scale(0.85)">
-        <line x1="36" y1="2" x2="36" y2="-18" stroke="#8C5230" stroke-width="3"/>
-        <polygon points="36,-18 56,-11 36,-4" fill="#FFD600"/>
-        <polygon points="0,48 36,2 72,48" fill="#FFFFFF"/>
-        <polygon points="14,48 36,2 30,48" fill="#8C4BFF"/>
-        <polygon points="42,48 36,2 58,48" fill="#8C4BFF"/>
-        <rect x="6" y="48" width="60" height="22" rx="3" fill="#F3E8FF"/>
-      </g>
+      <!-- Main Lush Park Lawn -->
+      <path d="M0 440 Q540 398 1100 432 T2200 420 L2200 820 L0 820 Z" fill="url(#nearLawnGrad)"/>
 
-      <!-- Mid Rolling Lush Park Hills -->
-      <path d="M0 445 Q340 385 660 435 T1200 420 L1200 820 L0 820 Z" fill="url(#midHillGrad)"/>
-      <path d="M0 540 Q420 495 820 535 T1200 515 L1200 820 L0 820 Z" fill="url(#nearLawnGrad)"/>
+      <!-- Single Natural Horizontal Park Promenade Walkway -->
+      <path d="M-40 695 Q380 658 780 690 T1560 680 T2240 692" stroke="#D99B43" stroke-width="92" fill="none" stroke-linecap="round"/>
+      <path d="M-40 695 Q380 658 780 690 T1560 680 T2240 692" stroke="url(#sandPathGrad)" stroke-width="78" fill="none" stroke-linecap="round"/>
 
-      <!-- Cheerful Winding Golden-Sand Walkways Connecting 4 Plaza Spots -->
-      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Warm terracotta border under paths -->
-        <path d="M600 830 Q595 690 600 575 M310 475 Q460 545 600 575 Q740 545 890 475 M285 690 Q450 645 600 575 Q750 645 915 690"
-              stroke="#D99B43" stroke-width="64"/>
-        <!-- Golden sand surface -->
-        <path d="M600 830 Q595 690 600 575 M310 475 Q460 545 600 575 Q740 545 890 475 M285 690 Q450 645 600 575 Q750 645 915 690"
-              stroke="url(#sandPathGrad)" stroke-width="52"/>
-      </g>
-
-      <!-- 4 Golden Plaza Pads + Central Hub Roundabout -->
-      <ellipse cx="600" cy="578" rx="88" ry="38" fill="#FFE799" stroke="#D99B43" stroke-width="6"/>
-      <ellipse cx="305" cy="472" rx="108" ry="42" fill="#FFE799" stroke="#D99B43" stroke-width="6"/>
-      <ellipse cx="895" cy="472" rx="108" ry="42" fill="#FFE799" stroke="#D99B43" stroke-width="6"/>
-      <ellipse cx="280" cy="692" rx="112" ry="44" fill="#FFE799" stroke="#D99B43" stroke-width="6"/>
-      <ellipse cx="920" cy="692" rx="112" ry="44" fill="#FFE799" stroke="#D99B43" stroke-width="6"/>
-
-      <!-- Cute Rounded Park Trees, Bushes & Little Flowers -->
+      <!-- Cute Rounded Park Trees & Little Flowers between Attractions -->
       <g>
-        <!-- Left Tree -->
-        <rect x="82" y="458" width="16" height="42" rx="6" fill="#8C5230"/>
-        <circle cx="90" cy="442" r="32" fill="#27AE44"/>
-        <circle cx="72" cy="454" r="22" fill="#37C956"/>
-        <circle cx="108" cy="454" r="22" fill="#1F9638"/>
-        <!-- Right Tree -->
-        <rect x="1098" y="448" width="16" height="44" rx="6" fill="#8C5230"/>
-        <circle cx="1106" cy="432" r="34" fill="#27AE44"/>
-        <circle cx="1086" cy="446" r="23" fill="#37C956"/>
-        <circle cx="1124" cy="446" r="23" fill="#1F9638"/>
-        <!-- Flower dots on grass -->
-        <circle cx="152" cy="560" r="5" fill="#FFF"/><circle cx="152" cy="560" r="2.2" fill="#FFD600"/>
-        <circle cx="174" cy="574" r="5" fill="#FFB3D1"/><circle cx="174" cy="574" r="2.2" fill="#FF3B6B"/>
-        <circle cx="1040" cy="572" r="5" fill="#FFF"/><circle cx="1040" cy="572" r="2.2" fill="#FFD600"/>
-        <circle cx="1064" cy="558" r="5" fill="#BAE6FD"/><circle cx="1064" cy="558" r="2.2" fill="#0284C7"/>
-        <circle cx="515" cy="482" r="4.5" fill="#FFF"/>
-        <circle cx="688" cy="486" r="4.5" fill="#FFE066"/>
+        <g transform="translate(54, 415)">
+          <rect x="20" y="42" width="16" height="44" rx="6" fill="#8C5230"/>
+          <circle cx="28" cy="28" r="32" fill="#27AE44"/>
+          <circle cx="10" cy="40" r="22" fill="#37C956"/>
+          <circle cx="46" cy="40" r="22" fill="#1F9638"/>
+        </g>
+        <g transform="translate(860, 412) scale(0.92)">
+          <rect x="20" y="42" width="16" height="44" rx="6" fill="#8C5230"/>
+          <circle cx="28" cy="28" r="32" fill="#27AE44"/>
+          <circle cx="10" cy="40" r="22" fill="#37C956"/>
+          <circle cx="46" cy="40" r="22" fill="#1F9638"/>
+        </g>
+        <g transform="translate(1590, 418) scale(0.95)">
+          <rect x="20" y="42" width="16" height="44" rx="6" fill="#8C5230"/>
+          <circle cx="28" cy="28" r="32" fill="#27AE44"/>
+          <circle cx="10" cy="40" r="22" fill="#37C956"/>
+          <circle cx="46" cy="40" r="22" fill="#1F9638"/>
+        </g>
+        <g transform="translate(2095, 412)">
+          <rect x="20" y="42" width="16" height="44" rx="6" fill="#8C5230"/>
+          <circle cx="28" cy="28" r="32" fill="#27AE44"/>
+          <circle cx="10" cy="40" r="22" fill="#37C956"/>
+          <circle cx="46" cy="40" r="22" fill="#1F9638"/>
+        </g>
+        <!-- Decorative flower dots along lawn -->
+        <circle cx="160" cy="762" r="5" fill="#FFF"/><circle cx="160" cy="762" r="2.2" fill="#FFD600"/>
+        <circle cx="495" cy="756" r="5" fill="#FFB3D1"/><circle cx="495" cy="756" r="2.2" fill="#FF3B6B"/>
+        <circle cx="940" cy="764" r="5" fill="#FFF"/><circle cx="940" cy="764" r="2.2" fill="#FFD600"/>
+        <circle cx="1390" cy="756" r="5" fill="#BAE6FD"/><circle cx="1390" cy="756" r="2.2" fill="#0284C7"/>
+        <circle cx="1820" cy="762" r="5" fill="#FFF"/><circle cx="1820" cy="762" r="2.2" fill="#FFD600"/>
+      </g>
+    </svg>`;
+  },
+
+  // Attraction 5: Duck Pond Carnival Booth (viewBox="0 0 260 230", inspired by user's photo!)
+  rideDuckPondSvg() {
+    return `<svg viewBox="0 0 260 230" class="ride-svg ride-duck-pond">
+      <!-- Ground shadow -->
+      <ellipse cx="130" cy="214" rx="102" ry="13" fill="rgba(18, 72, 24, 0.22)"/>
+
+      <!-- Orange Carnival Booth Frame -->
+      <rect x="34" y="96" width="192" height="114" rx="14" fill="#FF8A1A"/>
+      <!-- Blue Water Tank Window -->
+      <rect x="46" y="102" width="168" height="62" rx="8" fill="#46C2FF"/>
+      <!-- Water Wave Line -->
+      <path d="M46 134 Q68 124 90 134 T134 134 T178 134 T214 134 L214 164 L46 164 Z" fill="#1CA0EC"/>
+      <!-- Cute Bubbles -->
+      <circle cx="72" cy="126" r="6" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8"/>
+      <circle cx="192" cy="122" r="5" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8"/>
+
+      <!-- Swimming Purple & Red Ducks inside Tank -->
+      <g transform="translate(82, 114) scale(0.42)">
+        <path d="M16 56 C14 44 26 42 34 50 C44 46 86 48 92 64 C96 76 80 86 56 86 C32 86 18 76 16 56 Z" fill="#904BFF"/>
+        <circle cx="78" cy="36" r="24" fill="#904BFF"/>
+        <path d="M97 33 C112 32 115 41 108 45 C102 48 94 45 94 40 Z" fill="#FF9500"/>
+        <circle cx="85" cy="33" r="6" fill="#1E1B2E"/><circle cx="87" cy="31" r="2.2" fill="#FFF"/>
+      </g>
+      <g transform="translate(142, 108) scale(0.44)">
+        <path d="M16 56 C14 44 26 42 34 50 C44 46 86 48 92 64 C96 76 80 86 56 86 C32 86 18 76 16 56 Z" fill="#FF3B30"/>
+        <circle cx="78" cy="36" r="24" fill="#FF3B30"/>
+        <path d="M97 33 C112 32 115 41 108 45 C102 48 94 45 94 40 Z" fill="#FF9500"/>
+        <circle cx="85" cy="33" r="6" fill="#1E1B2E"/><circle cx="87" cy="31" r="2.2" fill="#FFF"/>
+      </g>
+
+      <!-- Counter Ledge & Diamond Pattern Base -->
+      <rect x="30" y="162" width="200" height="12" rx="6" fill="#FFD600"/>
+      <g fill="#E56A00">
+        <polygon points="62,180 72,193 62,206 52,193"/>
+        <polygon points="96,180 106,193 96,206 86,193"/>
+        <polygon points="130,180 140,193 130,206 120,193"/>
+        <polygon points="164,180 174,193 164,206 154,193"/>
+        <polygon points="198,180 208,193 198,206 188,193"/>
+      </g>
+
+      <!-- Striped Orange & White Carnival Awning -->
+      <path d="M22 104 L38 64 L222 64 L238 104 Z" fill="#FFFFFF"/>
+      <polygon points="38,64 62,64 52,104 22,104" fill="#FF7A1A"/>
+      <polygon points="86,64 110,64 106,104 80,104" fill="#FF7A1A"/>
+      <polygon points="134,64 158,64 160,104 134,104" fill="#FF7A1A"/>
+      <polygon points="182,64 206,64 214,104 188,104" fill="#FF7A1A"/>
+      <!-- Scallops -->
+      <g>
+        <circle cx="37" cy="104" r="15" fill="#FF7A1A"/>
+        <circle cx="67" cy="104" r="15" fill="#FFFFFF"/>
+        <circle cx="97" cy="104" r="15" fill="#FF7A1A"/>
+        <circle cx="127" cy="104" r="15" fill="#FFFFFF"/>
+        <circle cx="157" cy="104" r="15" fill="#FF7A1A"/>
+        <circle cx="187" cy="104" r="15" fill="#FFFFFF"/>
+        <circle cx="217" cy="104" r="15" fill="#FF7A1A"/>
+      </g>
+
+      <!-- Top Signboard + Giant Smiling Yellow Duck Sign! -->
+      <rect x="64" y="42" width="132" height="26" rx="13" fill="#FF5A36" stroke="#FF8A1A" stroke-width="4"/>
+      <g transform="translate(88, 4) scale(0.72)">
+        <path d="M16 56 C14 44 26 42 34 50 C44 46 86 48 92 64 C96 76 80 86 56 86 C32 86 18 76 16 56 Z" fill="#FFE033" stroke="#FF8A1A" stroke-width="4"/>
+        <circle cx="78" cy="36" r="24" fill="#FFE033" stroke="#FF8A1A" stroke-width="4"/>
+        <path d="M97 33 C112 32 115 41 108 45 C102 48 94 45 94 40 Z" fill="#FF8A00"/>
+        <circle cx="85" cy="33" r="6" fill="#1E1B2E"/><circle cx="87" cy="31" r="2.2" fill="#FFF"/>
       </g>
     </svg>`;
   },

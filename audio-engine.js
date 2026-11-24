@@ -675,6 +675,36 @@ class SoundEngine {
       setTimeout(() => this.playNote(f), idx * 85);
     });
   }
+
+  playQuack() {
+    if (this.muted) return;
+    this.initContext();
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(340, t);
+    osc.frequency.exponentialRampToValueAtTime(510, t + 0.045);
+    osc.frequency.exponentialRampToValueAtTime(280, t + 0.17);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1250, t);
+    filter.frequency.exponentialRampToValueAtTime(880, t + 0.17);
+    filter.Q.value = 3.2;
+
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(0.32, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.19);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.2);
+  }
 }
 
 window.sound = new SoundEngine();

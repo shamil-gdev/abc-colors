@@ -28,12 +28,9 @@
     <!-- Transition Swoosh Overlay -->
     <div id="scene-curtain" class="scene-curtain" aria-hidden="true"></div>
 
-    <!-- ==================== SCREEN 0: ILLUSTRATED AMUSEMENT PARK MAP ==================== -->
+    <!-- ==================== SCREEN 0: HORIZONTAL SCROLLABLE AMUSEMENT PARK ==================== -->
     <section id="screen-hub" class="screen screen-hub active" aria-label="Sunny Park Map">
-      <!-- Full-bleed Illustrated Amusement Park Scenery -->
-      <div id="park-scenery-bg" class="park-scenery-bg" aria-hidden="true"></div>
-
-      <!-- Top Park Sign & Sound Toggle -->
+      <!-- Top Park Sign & Sound Toggle (fixed above scrollable park) -->
       <header class="hub-topbar">
         <div class="park-badge" id="park-title-pill">
           <span class="park-sun-dot" aria-hidden="true"></span>
@@ -52,52 +49,63 @@
         </button>
       </header>
 
-      <!-- Amusement Park Plaza: 4 Attraction Pavilions + Welcoming Bear Mascot -->
-      <main class="park-map-stage">
-        <div class="park-plaza-grid">
-          <!-- Pavilion 1: Balloon Shop -->
-          <button class="park-pavilion-btn pavilion-balloons" data-target="colors" aria-label="Balloon Shop: Colors, Letters and Numbers">
-            <div class="pavilion-art" id="ride-art-colors"></div>
-            <div class="pavilion-label-pill">
-              <span class="pavilion-label-text">BALLOONS</span>
-              <span class="pavilion-mini-icons" aria-hidden="true">🎨🔤🔢</span>
-            </div>
-          </button>
+      <!-- Horizontally Scrollable Panoramic Amusement Park -->
+      <div class="park-scroll-viewport" id="park-scroll-viewport">
+        <div class="park-world-canvas">
+          <!-- Wide Illustrated Park Scenery -->
+          <div id="park-scenery-bg" class="park-scenery-bg" aria-hidden="true"></div>
 
-          <!-- Pavilion 2: ABC Safari Cards -->
-          <button class="park-pavilion-btn pavilion-abc" data-target="abc" aria-label="ABC Animal Cards">
-            <div class="pavilion-art" id="ride-art-abc"></div>
-            <div class="pavilion-label-pill">
-              <span class="pavilion-label-text">A B C</span>
-            </div>
-          </button>
+          <!-- Grounded Attractions Standing Along the Park Promenade -->
+          <main class="park-promenade-row" aria-label="Park Attractions">
+            <!-- Ride 1: Balloon Shop -->
+            <button class="park-pavilion-btn pavilion-balloons" data-target="colors" aria-label="Balloon Shop: Colors, Letters and Numbers">
+              <div class="pavilion-art" id="ride-art-colors"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">BALLOONS</span>
+              </div>
+            </button>
 
-          <!-- Pavilion 3: Shapes Park Ride -->
-          <button class="park-pavilion-btn pavilion-shapes" data-target="shapes" aria-label="Shapes Express Ride">
-            <div class="pavilion-art" id="ride-art-shapes"></div>
-            <div class="pavilion-label-pill">
-              <span class="pavilion-label-text">SHAPES</span>
-            </div>
-          </button>
+            <!-- Ride 2: Color Duck Pond Booth -->
+            <button class="park-pavilion-btn pavilion-ducks" data-target="ducks" aria-label="Color Duck Pond">
+              <div class="pavilion-art" id="ride-art-ducks"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">DUCKS</span>
+              </div>
+            </button>
 
-          <!-- Pavilion 4: Letter Paint Studio -->
-          <button class="park-pavilion-btn pavilion-trace" data-target="trace" aria-label="Draw Letters A to Z">
-            <div class="pavilion-art" id="ride-art-trace"></div>
-            <div class="pavilion-label-pill">
-              <span class="pavilion-label-text">DRAW A–Z</span>
-            </div>
-          </button>
+            <!-- Ride 3: ABC Animal Cards -->
+            <button class="park-pavilion-btn pavilion-abc" data-target="abc" aria-label="ABC Animal Cards">
+              <div class="pavilion-art" id="ride-art-abc"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">A B C</span>
+              </div>
+            </button>
+
+            <!-- Ride 4: Shapes Park Train -->
+            <button class="park-pavilion-btn pavilion-shapes" data-target="shapes" aria-label="Shapes Express Ride">
+              <div class="pavilion-art" id="ride-art-shapes"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">SHAPES</span>
+              </div>
+            </button>
+
+            <!-- Ride 5: Letter Paint Studio -->
+            <button class="park-pavilion-btn pavilion-trace" data-target="trace" aria-label="Draw Letters A to Z">
+              <div class="pavilion-art" id="ride-art-trace"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">DRAW A–Z</span>
+              </div>
+            </button>
+          </main>
         </div>
+      </div>
 
-        <!-- Park Entrance Mascot Bear Waving HI! -->
-        <div class="park-mascot-station" id="park-mascot-station">
-          <div class="mascot-character" id="hub-mascot-svg" role="button" tabindex="0" aria-label="Wave to Sunny Bear"></div>
-          <button class="mascot-hi-pill" id="btn-mascot-hello" aria-label="Say Hi">
-            <span class="hi-pill-text">HI! 👋</span>
-            <div class="hand-hint hub-hand-hint" id="hub-hand-hint" aria-hidden="true"></div>
-          </button>
-        </div>
-      </main>
+      <!-- Subtle right-edge scroll hint -->
+      <div class="park-scroll-hint" id="park-scroll-hint" aria-hidden="true">
+        <svg viewBox="0 0 36 36" width="32" height="32">
+          <path d="M13 8l10 10-10 10" stroke="#432C7A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
     </section>
 
     <!-- ==================== SCREEN 1: ABC 3D FLIPPING ANIMAL CARDS ==================== -->
@@ -158,6 +166,9 @@
             <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
           </svg>
         </button>
+
+        <!-- Toggle button to show/hide A-Z strip (hidden by default) -->
+        <button class="trace-toggle-btn" id="btn-trace-toggle-strip" aria-label="Show or hide letters">A–Z</button>
       </header>
 
       <div class="trace-stage">
@@ -174,8 +185,8 @@
         </div>
       </div>
 
-      <!-- Scrollable A–Z Letter Selector Strip -->
-      <footer class="trace-letter-strip" id="trace-letter-strip" aria-label="Choose Letter"></footer>
+      <!-- Scrollable A–Z Letter Selector Strip (Hidden by Default) -->
+      <footer class="trace-letter-strip hidden" id="trace-letter-strip" aria-label="Choose Letter"></footer>
 
       <!-- Peeking Puppy Mascot -->
       <div class="corner-companion" id="trace-companion"></div>
@@ -200,6 +211,27 @@
 
       <!-- Peeking Companion Mascot -->
       <div class="corner-companion" id="shapes-companion"></div>
+    </section>
+
+    <!-- ==================== SCREEN 5: COLOR DUCK POND ==================== -->
+    <section id="screen-ducks" class="screen screen-ducks" aria-label="Color Duck Pond">
+      <header class="game-topbar">
+        <button class="home-park-btn" data-go-home aria-label="Back to Park">
+          <svg viewBox="0 0 44 44" width="34" height="34" aria-hidden="true">
+            <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+            <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+          </svg>
+        </button>
+
+        <div class="progress-pill" id="ducks-progress-pill">🦆 0 / 3</div>
+      </header>
+
+      <!-- Full-Screen Duck Pond & Houses Stage -->
+      <div class="ducks-stage" id="ducks-stage"></div>
+
+      <!-- Peeking Companion Mascot -->
+      <div class="corner-companion right" id="ducks-companion"></div>
     </section>
 
     <!-- ==================== FULLSCREEN CELEBRATION MODAL ==================== -->
@@ -231,6 +263,7 @@
   <script src="./audio-engine.js"></script>
   <script src="./game-balloons.js"></script>
   <script src="./game-shapes.js"></script>
+  <script src="./game-ducks.js"></script>
   <script src="./game-abc-trace.js"></script>
   <script src="./app.js"></script>
 </body>

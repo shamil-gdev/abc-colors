@@ -118,6 +118,11 @@
 
     function enter() {
       init();
+      // Always reset all cards to unflipped front and scroll back to top on every entry
+      if (gridEl) {
+        gridEl.querySelectorAll('.flip-card.is-flipped').forEach((c) => c.classList.remove('is-flipped'));
+        gridEl.scrollTop = 0;
+      }
       window.sound?.speakClip('./audio/phrases/abc_time.mp3', 'ABC!');
     }
 
@@ -196,9 +201,20 @@
         btn.addEventListener('pointerup', (ev) => {
           if (Math.hypot(ev.clientX - downX, ev.clientY - downY) < 12) {
             loadLetter(idx, true);
+            stripEl.classList.add('hidden');
+            document.getElementById('btn-trace-toggle-strip')?.classList.remove('active');
           }
         });
         stripEl.appendChild(btn);
+      });
+
+      // Toggle button to show/hide bottom A-Z strip (hidden by default)
+      const toggleStripBtn = document.getElementById('btn-trace-toggle-strip');
+      toggleStripBtn?.addEventListener('pointerdown', (ev) => {
+        ev.preventDefault();
+        const isNowHidden = stripEl.classList.toggle('hidden');
+        toggleStripBtn.classList.toggle('active', !isNowHidden);
+        window.sound?.playTap?.(560);
       });
 
       // Tapping reward card replays animal word & sparkles
@@ -738,7 +754,10 @@
 
     function enter() {
       init();
-      loadLetter(traceIndex, true);
+      // Always start fresh from Letter A with the letter strip hidden
+      stripEl?.classList.add('hidden');
+      document.getElementById('btn-trace-toggle-strip')?.classList.remove('active');
+      loadLetter(0, true);
     }
 
     function leave() {

@@ -1,5 +1,5 @@
 // Offline-First Service Worker for iPad Home Screen Web App
-const CACHE_NAME = 'sunny-park-abc-v3';
+const CACHE_NAME = 'sunny-park-abc-v4';
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const COLORS = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'white', 'brown'];
@@ -33,6 +33,7 @@ const PRECACHE_URLS = [
   './audio-engine.js',
   './game-balloons.js',
   './game-shapes.js',
+  './game-ducks.js',
   './game-abc-trace.js',
   './app.js',
   './manifest.json',

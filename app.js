@@ -259,22 +259,18 @@
     };
 
     mountSvg('ride-art-colors', 'rideBalloonShopSvg');
+    mountSvg('ride-art-ducks', 'rideDuckPondSvg');
     mountSvg('ride-art-abc', 'rideAbcZooSvg');
     mountSvg('ride-art-shapes', 'rideShapesExpressSvg');
     mountSvg('ride-art-trace', 'ridePaintPavilionSvg');
 
-    const mascotEl = document.getElementById('hub-mascot-svg');
-    if (mascotEl && typeof window.PARK_ART.mascotBear === 'function') {
-      mascotEl.innerHTML = window.PARK_ART.mascotBear('wink');
-    }
-
-    mountSvg('hub-hand-hint', 'pointerHand');
     mountSvg('trace-hand-hint', 'pointerHand');
 
     mountSvg('abc-companion', 'peekingPuppy');
     mountSvg('colors-companion', 'peekingFrog');
     mountSvg('trace-companion', 'peekingPuppy');
     mountSvg('shapes-companion', 'peekingFrog');
+    mountSvg('ducks-companion', 'peekingPuppy');
 
     // Companions giggle & cheer when tapped!
     document.querySelectorAll('.corner-companion').forEach((el) => {
@@ -300,6 +296,7 @@
     colors: '#2F9AE8',
     trace: '#3E2575',
     shapes: '#42B2FA',
+    ducks: '#36B3F5',
   };
 
   function getGameModule(screenName) {
@@ -307,6 +304,7 @@
     if (screenName === 'colors') return window.BalloonsGame;
     if (screenName === 'trace') return window.TraceGame;
     if (screenName === 'shapes') return window.ShapesGame;
+    if (screenName === 'ducks') return window.DucksGame;
     return null;
   }
 
@@ -353,36 +351,41 @@
 
   // ==================== BIND GLOBAL & HUB EVENTS ====================
   function bindEvents() {
-    const mascotEl = document.getElementById('hub-mascot-svg');
-    const mascotBtn = document.getElementById('btn-mascot-hello');
+    // Scrollable Amusement Park Pavilions (distinguish horizontal scroll from tap!)
+    const scrollViewport = document.getElementById('park-scroll-viewport');
+    const scrollHint = document.getElementById('park-scroll-hint');
+    scrollViewport?.addEventListener(
+      'scroll',
+      () => {
+        if (scrollHint && scrollViewport.scrollLeft > 40) {
+          scrollHint.classList.add('hidden');
+        }
+      },
+      { passive: true }
+    );
 
-    const greetMascot = (ev) => {
-      ev.stopPropagation();
-      const r = (mascotEl || ev.currentTarget).getBoundingClientRect();
-      burstConfetti(r.left + r.width / 2, r.top + r.height / 2, '#FFD600', 26);
-      spawnRingRipple(r.left + r.width / 2, r.top + r.height / 2, '#FFD600');
-
-      if (mascotEl) {
-        mascotEl.classList.remove('wave-jump');
-        void mascotEl.offsetWidth;
-        mascotEl.classList.add('wave-jump');
-      }
-
-      window.sound?.playFanfare?.();
-      window.sound?.speakClip?.('./audio/phrases/welcome.mp3', 'Hi! Welcome to Sunny Park!');
-      document.getElementById('hub-hand-hint')?.classList.add('hidden');
-    };
-
-    mascotEl?.addEventListener('pointerdown', greetMascot);
-    mascotBtn?.addEventListener('pointerdown', greetMascot);
-
-    // 4 Amusement Park Pavilions
     document.querySelectorAll('[data-target]').forEach((pavilion) => {
-      pavilion.addEventListener('pointerdown', () => {
-        const target = pavilion.getAttribute('data-target');
-        const r = pavilion.getBoundingClientRect();
-        burstConfetti(r.left + r.width / 2, r.top + r.height / 2, null, 22);
-        switchScreen(target);
+      let downX = 0;
+      let downY = 0;
+      let active = false;
+
+      pavilion.addEventListener('pointerdown', (ev) => {
+        downX = ev.clientX;
+        downY = ev.clientY;
+        active = true;
+      });
+      pavilion.addEventListener('pointercancel', () => {
+        active = false;
+      });
+      pavilion.addEventListener('pointerup', (ev) => {
+        if (!active) return;
+        active = false;
+        if (Math.hypot(ev.clientX - downX, ev.clientY - downY) < 16) {
+          const target = pavilion.getAttribute('data-target');
+          const r = pavilion.getBoundingClientRect();
+          burstConfetti(r.left + r.width / 2, r.top + r.height / 2, null, 20);
+          switchScreen(target);
+        }
       });
     });
 
@@ -431,6 +434,8 @@
         window.TraceGame?.update?.(now);
       } else if (state.screen === 'shapes') {
         window.ShapesGame?.update?.(now);
+      } else if (state.screen === 'ducks') {
+        window.DucksGame?.update?.(now);
       }
     } catch (_) {}
     try {
@@ -455,6 +460,7 @@
   window.BalloonsGame?.init?.();
   window.TraceGame?.init?.();
   window.ShapesGame?.init?.();
+  window.DucksGame?.init?.();
 
   requestAnimationFrame(loop);
 })();

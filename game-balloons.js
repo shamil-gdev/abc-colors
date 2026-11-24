@@ -653,15 +653,10 @@
     progressPillEl = document.getElementById('balloon-progress-pill');
     companionEl = document.getElementById('colors-companion');
 
+    // Always start completely fresh on every ride entry
+    mode = 'colors';
     syncModeButtons();
-    updateProgressPill(false);
-
-    const total = getModePool().length;
-    if (celebrating || (total > 0 && poppedIds.size >= total)) {
-      resetRound(true);
-    } else if (balloons.length === 0) {
-      seedInitialBalloons();
-    }
+    resetRound(true);
 
     const meta = MODE_META[mode] || MODE_META.colors;
     window.sound?.speakClip?.('./audio/phrases/pop_balloons.mp3', meta.introFallback);

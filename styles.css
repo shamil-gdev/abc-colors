@@ -116,37 +116,28 @@ button {
 }
 
 /* ==========================================================================
-   SCREEN 0: BIG ILLUSTRATED AMUSEMENT PARK MAP (#screen-hub)
+   SCREEN 0: HORIZONTAL SCROLLABLE PANORAMIC AMUSEMENT PARK (#screen-hub)
    ========================================================================== */
 
 .screen-hub {
-  background: linear-gradient(180deg, #47B6F5 0%, #83D7FF 42%, #67CE67 43%, #4AB852 100%);
-  justify-content: space-between;
-}
-
-.park-scenery-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.park-scenery-bg svg {
-  width: 100%;
-  height: 100%;
-  display: block;
+  background: linear-gradient(180deg, #47B6F5 0%, #98E6FF 48%, #58DA5B 49%, #2EAD44 100%);
+  padding: 0;
 }
 
 .hub-topbar {
-  position: relative;
-  z-index: 10;
+  position: absolute;
+  top: calc(var(--safe-top) + 12px);
+  left: calc(var(--safe-left) + 18px);
+  right: calc(var(--safe-right) + 18px);
+  z-index: 25;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.hub-topbar > * {
+  pointer-events: auto;
 }
 
 .park-badge {
@@ -161,7 +152,7 @@ button {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.6px;
-  box-shadow: 0 6px 0 rgba(126, 78, 0, 0.28), 0 10px 20px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 6px 0 rgba(126, 78, 0, 0.28);
 }
 
 .park-sun-dot {
@@ -180,7 +171,7 @@ button {
   border: 3.5px solid rgba(255, 255, 255, 0.9);
   display: grid;
   place-items: center;
-  box-shadow: 0 6px 0 rgba(35, 75, 40, 0.26), 0 10px 18px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 6px 0 rgba(35, 75, 40, 0.26);
   transition: transform 0.1s;
 }
 .icon-pill-btn:active {
@@ -188,182 +179,142 @@ button {
   box-shadow: 0 2px 0 rgba(35, 75, 40, 0.26);
 }
 
-/* Park Plaza Stage: 4 Scenic Ride Pavilions + Entrance Mascot */
-.park-map-stage {
+/* Horizontal Scrollable Park Promenade */
+.park-scroll-viewport {
   position: relative;
-  z-index: 6;
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 0 2px;
-}
-
-.park-plaza-grid {
   width: 100%;
   height: 100%;
-  max-width: 1120px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(148px, 17vw, 224px);
-  row-gap: clamp(8px, 1.8vh, 20px);
-  align-items: center;
-  justify-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
+}
+.park-scroll-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.park-world-canvas {
+  position: relative;
+  width: 2200px;
+  min-width: 100%;
+  height: 100%;
+}
+
+.park-scenery-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.park-scenery-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.park-promenade-row {
+  position: relative;
+  z-index: 6;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 58px;
+  padding: 0 88px calc(var(--safe-bottom) + 64px) 72px;
 }
 
 .park-pavilion-btn {
   position: relative;
-  width: min(100%, 336px);
-  max-height: 100%;
+  flex: 0 0 auto;
+  width: 344px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 4px 8px;
+  justify-content: flex-end;
+  padding: 6px;
   border-radius: 36px;
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: pavilionFloat 4.6s ease-in-out infinite;
+  touch-action: pan-x;
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Staggered Park Map Placement & Gentle Rhythm */
-.pavilion-balloons {
-  justify-self: end;
-  align-self: end;
-  margin-right: 16px;
-  margin-bottom: -22px;
-  animation-delay: 0s;
-}
-.pavilion-abc {
-  justify-self: start;
-  align-self: end;
-  margin-left: 16px;
-  margin-bottom: -22px;
-  animation-delay: 1.1s;
-}
-.pavilion-shapes {
-  justify-self: end;
-  margin-right: 22px;
-  animation-delay: 2.2s;
-}
-.pavilion-trace {
-  justify-self: start;
-  margin-left: 22px;
-  animation-delay: 0.6s;
-}
-
-@keyframes pavilionFloat {
-  0%, 100% { transform: translateY(0px); }
-  50%      { transform: translateY(-5px); }
-}
+/* Natural varied depth along the park lawn — grounded, never floating! */
+.pavilion-balloons { margin-bottom: 42px; }
+.pavilion-ducks    { margin-bottom: 12px; }
+.pavilion-abc      { margin-bottom: 48px; }
+.pavilion-shapes   { margin-bottom: 14px; }
+.pavilion-trace    { margin-bottom: 40px; }
 
 .park-pavilion-btn:active {
-  transform: translateY(6px) scale(0.94) !important;
+  transform: scale(0.95);
 }
 
 .pavilion-art {
-  width: 100%;
-  height: clamp(142px, 27vh, 224px);
+  width: 326px;
+  height: 290px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  filter: drop-shadow(0 12px 14px rgba(18, 56, 24, 0.26));
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .pavilion-art svg {
   width: 100%;
   height: 100%;
-  max-width: 268px;
-  max-height: 228px;
   display: block;
   overflow: visible;
 }
 
 .pavilion-label-pill {
-  margin-top: -12px;
+  margin-top: -10px;
   position: relative;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 22px;
+  padding: 10px 26px;
   border-radius: 999px;
   background: #FFFFFF;
   color: #2B1D4E;
-  border: 4px solid #FFD026;
-  font-size: clamp(19px, 2.1vw, 25px);
+  border: 4.5px solid #FFD026;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: 0.6px;
   white-space: nowrap;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2), 0 10px 18px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
 }
 
 .pavilion-balloons .pavilion-label-pill { border-color: #FF5E7E; }
-.pavilion-abc .pavilion-label-pill      { border-color: #FF9F1C; }
+.pavilion-ducks .pavilion-label-pill    { border-color: #FF8A1A; }
+.pavilion-abc .pavilion-label-pill      { border-color: #FFB800; }
 .pavilion-shapes .pavilion-label-pill   { border-color: #2EC4B6; }
 .pavilion-trace .pavilion-label-pill    { border-color: #9B5DE5; }
 
-.pavilion-mini-icons {
-  font-size: 0.85em;
-  letter-spacing: 1px;
-}
-
-/* Cute Bear Mascot Standing at the Central Park Entrance */
-.park-mascot-station {
+/* Subtle Right-Edge Scroll Hint Arrow */
+.park-scroll-hint {
   position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 12;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  right: calc(var(--safe-right) + 18px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 4px solid #FFD026;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.16);
+  animation: scrollHintPulse 1.6s ease-in-out infinite;
 }
 
-.mascot-character {
-  width: clamp(112px, 14.5vw, 152px);
-  height: clamp(112px, 14.5vw, 152px);
-  cursor: pointer;
-  animation: mascotBob 2.8s ease-in-out infinite;
-  filter: drop-shadow(0 10px 10px rgba(18, 56, 24, 0.28));
-}
-.mascot-character.wave-jump {
-  animation: mascotCheerJump 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes mascotBob {
-  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
-  50%      { transform: translateY(-8px) rotate(2deg); }
-}
-
-@keyframes mascotCheerJump {
-  0%   { transform: translateY(0) scale(1); }
-  40%  { transform: translateY(-20px) scale(1.12) rotate(5deg); }
-  75%  { transform: translateY(3px) scale(0.96) rotate(-3deg); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-.mascot-hi-pill {
-  position: relative;
-  margin-top: -14px;
-  background: linear-gradient(180deg, #FFE14D 0%, #FFB800 100%);
-  color: #3B1F6E;
-  border: 4px solid #FFFFFF;
-  padding: 6px 22px;
-  border-radius: 999px;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  box-shadow: 0 6px 0 #C98A00, 0 10px 18px rgba(0, 0, 0, 0.2);
-  transition: transform 0.12s;
-}
-.mascot-hi-pill:active {
-  transform: translateY(4px) scale(0.96);
-  box-shadow: 0 2px 0 #C98A00;
+@keyframes scrollHintPulse {
+  0%, 100% { transform: translateY(-50%) translateX(0); opacity: 0.9; }
+  50%      { transform: translateY(-50%) translateX(8px); opacity: 1; }
 }
 
 /* Cartoon Pointer Hand */
@@ -373,14 +324,47 @@ button {
   z-index: 25;
   animation: handTap 1.35s ease-in-out infinite;
 }
-.hub-hand-hint {
-  bottom: -44px;
-  right: -28px;
-}
 
 @keyframes handTap {
   0%, 100% { transform: translate(0, 6px) scale(1); }
   45%      { transform: translate(-4px, -10px) scale(0.93); }
+}
+
+/* Toggle A-Z Strip Button on Draw A-Z Screen */
+.trace-toggle-btn {
+  min-width: 78px;
+  height: 60px;
+  padding: 0 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border: 3px solid rgba(255, 255, 255, 0.45);
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.22);
+  transition: transform 0.1s, background 0.15s;
+}
+.trace-toggle-btn.active {
+  background: #FFD600;
+  color: #311D5E;
+  border-color: #FFFFFF;
+}
+.trace-toggle-btn:active {
+  transform: translateY(4px);
+}
+
+/* Screen 5: Color Duck Pond */
+.screen-ducks {
+  background: linear-gradient(180deg, #4CC7FF 0%, #8AE0FF 55%, #4CC95B 56%, #2EA642 100%);
+}
+.ducks-stage {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ==========================================================================
