@@ -85,8 +85,6 @@ class SoundEngine {
       'lets_play',
       'abc_time',
       'pop_balloons',
-      'pop_bubbles',
-      'magic_letters',
       'yay',
       'awesome',
       'wonderful',
@@ -107,7 +105,6 @@ class SoundEngine {
       'orange',
       'purple',
       'pink',
-      'cyan',
       'white',
       'brown',
     ];

@@ -35,8 +35,8 @@
     count = 20
   ) {
     const palette = baseColor
-      ? [baseColor, '#FFD600', '#FFFFFF', baseColor, '#FF3D9A', '#22C6FF']
-      : ['#FF3B30', '#FFD600', '#24C958', '#22C6FF', '#8C4BFF', '#FF3D9A', '#FF8A00'];
+      ? [baseColor, '#FFD600', '#FFFFFF', baseColor, '#FF3D9A', '#2B6BFF']
+      : ['#FF3B30', '#FFD600', '#24C958', '#2B6BFF', '#8C4BFF', '#FF3D9A', '#FF8A00'];
 
     const actualCount = Math.min(count, 24);
     for (let i = 0; i < actualCount; i++) {
@@ -84,7 +84,7 @@
     ctx.fill();
   }
 
-  function updateParticles() {
+  function updateParticles(dt = 1 / 60) {
     if (particles.length === 0) {
       if (canvasDirty) {
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -92,11 +92,12 @@
       }
       return;
     }
+    const step = dt * 60;
     canvasDirty = true;
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.life -= p.decay;
+      p.life -= p.decay * step;
       if (p.life <= 0) {
         particles.splice(i, 1);
         continue;
@@ -104,18 +105,18 @@
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.life);
       if (p.shape === 'ring') {
-        p.radius += (p.maxRadius - p.radius) * 0.2;
+        p.radius += (p.maxRadius - p.radius) * Math.min(1, 0.2 * step);
         ctx.strokeStyle = p.color;
         ctx.lineWidth = 6 * p.life;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.stroke();
       } else {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.25;
-        p.vx *= 0.97;
-        p.rot += p.vrot;
+        p.x += p.vx * step;
+        p.y += p.vy * step;
+        p.vy += 0.25 * step;
+        p.vx *= Math.pow(0.97, step);
+        p.rot += p.vrot * step;
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rot);
         ctx.fillStyle = p.color;
@@ -191,17 +192,27 @@
       window.sound?.speakClip?.('./audio/phrases/awesome.mp3', 'Awesome!');
     }
 
-    // Immediate celebratory twin firework burst + continuous bursts while modal is open
+    // Immediate celebratory twin firework burst + 3 calm follow-up bursts (capped, never infinite!)
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const w = window.innerWidth;
     const h = window.innerHeight;
-    burstConfetti(w * 0.28, h * 0.36, null, 34);
-    burstConfetti(w * 0.72, h * 0.36, null, 34);
+    burstConfetti(w * 0.28, h * 0.36, null, reducedMotion ? 10 : 28);
+    burstConfetti(w * 0.72, h * 0.36, null, reducedMotion ? 10 : 28);
 
-    state.celebrationTimer = setInterval(() => {
-      const fx = window.innerWidth * (0.18 + Math.random() * 0.64);
-      const fy = window.innerHeight * (0.18 + Math.random() * 0.5);
-      burstConfetti(fx, fy, null, 24);
-    }, 680);
+    if (!reducedMotion) {
+      let burstsLeft = 3;
+      state.celebrationTimer = setInterval(() => {
+        if (burstsLeft <= 0) {
+          clearInterval(state.celebrationTimer);
+          state.celebrationTimer = null;
+          return;
+        }
+        burstsLeft--;
+        const fx = window.innerWidth * (0.2 + Math.random() * 0.6);
+        const fy = window.innerHeight * (0.2 + Math.random() * 0.45);
+        burstConfetti(fx, fy, null, 20);
+      }, 720);
+    }
   }
 
   function hideCelebration() {
@@ -226,13 +237,28 @@
   document.addEventListener('contextmenu', (e) => e.preventDefault());
 
   let firstTouchDone = false;
+  let companionSleepTimer = null;
+
+  function resetCompanionSleep() {
+    document.querySelectorAll('.corner-companion.sleeping').forEach((el) => el.classList.remove('sleeping'));
+    clearTimeout(companionSleepTimer);
+    companionSleepTimer = setTimeout(() => {
+      const activeComp = document.querySelector('.screen.active .corner-companion');
+      if (activeComp) activeComp.classList.add('sleeping');
+    }, 20000);
+  }
+
   window.addEventListener(
     'pointerdown',
-    () => {
+    (ev) => {
       window.sound?.initContext?.();
+      resetCompanionSleep();
       if (!firstTouchDone) {
         firstTouchDone = true;
         window.sound?.preloadCoreClips?.();
+        if (state.screen === 'hub' && !ev.target?.closest?.('[data-target]')) {
+          window.sound?.speakClip?.('./audio/phrases/welcome.mp3', 'Hi! Welcome to Sunny Park!');
+        }
       }
     },
     { passive: true }
@@ -323,6 +349,9 @@
       window.sound?.playTap?.(600);
     }
 
+    if (curtain && THEME_COLORS[target]) {
+      curtain.style.background = THEME_COLORS[target];
+    }
     curtain?.classList.add('covering');
 
     setTimeout(() => {
@@ -389,9 +418,63 @@
       });
     });
 
-    // Home buttons across all screens
+    // Home buttons across all screens — hold ~580ms with filling progress ring
+    const HOLD_MS = 580;
     document.querySelectorAll('[data-go-home]').forEach((btn) => {
-      btn.addEventListener('pointerdown', () => switchScreen('hub'));
+      if (!btn.querySelector('.home-hold-ring')) {
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        ring.setAttribute('class', 'home-hold-ring');
+        ring.setAttribute('viewBox', '0 0 72 72');
+        ring.setAttribute('aria-hidden', 'true');
+        ring.innerHTML = `<circle class="home-hold-track" cx="36" cy="36" r="32"/><circle class="home-hold-fill" cx="36" cy="36" r="32"/>`;
+        btn.appendChild(ring);
+      }
+
+      const fillCircle = btn.querySelector('.home-hold-fill');
+      const CIRC = 2 * Math.PI * 32;
+      if (fillCircle) {
+        fillCircle.style.strokeDasharray = `${CIRC}`;
+        fillCircle.style.strokeDashoffset = `${CIRC}`;
+      }
+
+      let holdStart = 0;
+      let holdRaf = null;
+      let holdActive = false;
+
+      const cancelHold = () => {
+        if (!holdActive) return;
+        holdActive = false;
+        btn.classList.remove('holding');
+        if (holdRaf) cancelAnimationFrame(holdRaf);
+        holdRaf = null;
+        if (fillCircle) fillCircle.style.strokeDashoffset = `${CIRC}`;
+      };
+
+      const tickHold = (ts) => {
+        if (!holdActive) return;
+        const pct = Math.min(1, (ts - holdStart) / HOLD_MS);
+        if (fillCircle) {
+          fillCircle.style.strokeDashoffset = `${CIRC * (1 - pct)}`;
+        }
+        if (pct >= 1) {
+          cancelHold();
+          switchScreen('hub');
+          return;
+        }
+        holdRaf = requestAnimationFrame(tickHold);
+      };
+
+      btn.addEventListener('pointerdown', (ev) => {
+        ev.preventDefault();
+        holdActive = true;
+        holdStart = performance.now();
+        btn.classList.add('holding');
+        window.sound?.playTap?.(420);
+        holdRaf = requestAnimationFrame(tickHold);
+      });
+      btn.addEventListener('pointerup', cancelHold);
+      btn.addEventListener('pointerleave', cancelHold);
+      btn.addEventListener('pointercancel', cancelHold);
     });
 
     // Mute toggle
@@ -425,8 +508,14 @@
     });
   }
 
-  // ==================== MAIN 60FPS ANIMATION LOOP ====================
+  // ==================== MAIN 60/120FPS ANIMATION LOOP ====================
+  let lastLoopNow = 0;
+  let loggedGameErr = false;
+  let loggedFxErr = false;
+
   function loop(now) {
+    const dt = lastLoopNow ? Math.min(0.05, Math.max(0.004, (now - lastLoopNow) / 1000)) : 1 / 60;
+    lastLoopNow = now;
     try {
       if (state.screen === 'colors') {
         window.BalloonsGame?.update?.(now);
@@ -437,10 +526,20 @@
       } else if (state.screen === 'ducks') {
         window.DucksGame?.update?.(now);
       }
-    } catch (_) {}
+    } catch (err) {
+      if (!loggedGameErr) {
+        loggedGameErr = true;
+        console.error('Game loop error:', err);
+      }
+    }
     try {
-      updateParticles();
-    } catch (_) {}
+      updateParticles(dt);
+    } catch (err) {
+      if (!loggedFxErr) {
+        loggedFxErr = true;
+        console.error('FX loop error:', err);
+      }
+    }
     requestAnimationFrame(loop);
   }
 

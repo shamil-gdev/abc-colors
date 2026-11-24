@@ -635,15 +635,26 @@
       }
     }
 
-    // Called at 60fps from app.js main loop when on #screen-trace
-    function update() {
-      if (!initialized || completed || !activePathEl) return;
+    let lastTraceUpdateNow = 0;
+
+    // Called at 60/120fps from app.js main loop when on #screen-trace
+    function update(now) {
+      if (!initialized || completed || !activePathEl) {
+        lastTraceUpdateNow = 0;
+        return;
+      }
+
+      const t = typeof now === 'number' ? now : performance.now();
+      const dt = lastTraceUpdateNow ? Math.min(0.05, Math.max(0.004, (t - lastTraceUpdateNow) / 1000)) : 1 / 60;
+      lastTraceUpdateNow = t;
+      const step = dt * 60;
 
       const prevDisplay = displayProgress;
       const diff = targetProgress - displayProgress;
 
       if (Math.abs(diff) > 0.0004) {
-        displayProgress += diff * 0.3;
+        const alpha = 1 - Math.pow(0.7, step);
+        displayProgress += diff * alpha;
         if (targetProgress >= 1 && displayProgress >= 0.985) {
           displayProgress = 1;
         }

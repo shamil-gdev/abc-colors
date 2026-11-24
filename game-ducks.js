@@ -5,14 +5,13 @@
 // ============================================================================
 
 (() => {
-  const DUCK_COLORS = {
-    red:    { id: 'red',    name: 'Red',    hex: '#FF3B30', dark: '#C81E14', light: '#FF7A73' },
-    blue:   { id: 'blue',   name: 'Blue',   hex: '#1E88FF', dark: '#0E5BC0', light: '#6BB5FF' },
-    green:  { id: 'green',  name: 'Green',  hex: '#24C958', dark: '#148F3B', light: '#6BE690' },
-    yellow: { id: 'yellow', name: 'Yellow', hex: '#FFD600', dark: '#CFA300', light: '#FFF07A' },
-    purple: { id: 'purple', name: 'Purple', hex: '#904BFF', dark: '#6325C9', light: '#BD94FF' },
-    orange: { id: 'orange', name: 'Orange', hex: '#FF8A00', dark: '#C76200', light: '#FFB85C' },
-  };
+  function getDuckColor(cid) {
+    const p = window.PALETTE?.[cid];
+    if (p) {
+      return { id: p.id, name: p.name, hex: p.hex, dark: p.rim, light: p.light || '#FFFFFF' };
+    }
+    return { id: cid, name: cid, hex: '#2B6BFF', dark: '#1847BA', light: '#73A0FF' };
+  }
 
   const WAVES = [
     ['red', 'blue', 'green'],
@@ -33,6 +32,7 @@
   let houses = [];
   let activeDrag = null; // { duck, inputId, startX, startY, curX, curY, moved }
   let waveTimer = null;
+  let lastUpdateNow = 0;
 
   function duckSvg(col, facingRight = true) {
     const flip = facingRight ? '' : 'transform="scale(-1,1) translate(-120,0)"';
@@ -44,7 +44,7 @@
           <!-- Tail & plump body -->
           <path d="M16 56 C14 44 26 42 34 50 C44 46 86 48 92 64 C96 76 80 86 56 86 C32 86 18 76 16 56 Z" fill="${col.hex}"/>
           <!-- Cute wing -->
-          <path d="M38 62 C46 56 64 58 66 68 C64 76 44 76 38 68 Z" fill="${col.dark}" opacity="0.32"/>
+          <path class="duck-wing-anim" d="M38 62 C46 56 64 58 66 68 C64 76 44 76 38 68 Z" fill="${col.dark}" opacity="0.38"/>
           <!-- Round head -->
           <circle cx="78" cy="36" r="24" fill="${col.hex}"/>
           <!-- Glossy forehead highlight -->
@@ -76,9 +76,9 @@
         <ellipse cx="72" cy="140" rx="56" ry="7" fill="rgba(22, 92, 34, 0.28)"/>
         <!-- House body -->
         <rect x="20" y="56" width="104" height="82" rx="20" fill="${col.hex}" stroke="#FFFFFF" stroke-width="4"/>
-        <!-- Roof -->
+        <!-- Roof + Clear Color Badge Circle -->
         <path d="M10 64 L72 14 L134 64 Z" fill="${col.dark}" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
-        <circle cx="72" cy="38" r="8" fill="#FFD600"/>
+        <circle cx="72" cy="40" r="12" fill="${col.hex}" stroke="#FFFFFF" stroke-width="3.5"/>
         <!-- Arched doorway -->
         <path d="M36 136 L36 90 C36 68 108 68 108 90 L108 136 Z" fill="rgba(24, 18, 46, 0.34)"/>
         ${doorwayContent}
@@ -136,6 +136,22 @@
       .ducks-wave-1 { top: 28%; }
       .ducks-wave-2 { top: 62%; opacity: 0.7; }
 
+      .duck-flip-wrap {
+        width: 100%;
+        height: 100%;
+        transform-origin: center;
+      }
+      .duck-actor.facing-left .duck-flip-wrap {
+        transform: scaleX(-1);
+      }
+      .duck-actor.dragging .duck-wing-anim {
+        animation: duckWingFlap 0.22s ease-in-out infinite alternate;
+        transform-origin: 52px 66px;
+      }
+      @keyframes duckWingFlap {
+        from { transform: rotate(-14deg); }
+        to   { transform: rotate(18deg); }
+      }
       .duck-actor {
         position: absolute;
         left: 0;
@@ -223,7 +239,7 @@
 
     // Render colored houses at bottom
     colorIds.forEach((cid) => {
-      const col = DUCK_COLORS[cid];
+      const col = getDuckColor(cid);
       const slotEl = document.createElement('div');
       slotEl.className = 'duck-house-slot';
       slotEl.dataset.colorId = cid;
@@ -238,12 +254,13 @@
     const poolH = poolEl.clientHeight || 260;
 
     shuffled.forEach((cid, i) => {
-      const col = DUCK_COLORS[cid];
+      const col = getDuckColor(cid);
       const el = document.createElement('div');
       el.className = 'duck-actor';
       el.dataset.colorId = cid;
       const dir = i % 2 === 0 ? 1 : -1;
-      el.innerHTML = duckSvg(col, dir > 0);
+      el.classList.toggle('facing-left', dir < 0);
+      el.innerHTML = `<div class="duck-flip-wrap">${duckSvg(col, true)}</div>`;
 
       const laneY = Math.max(18, Math.min(poolH - 110, 26 + (i % 2) * (poolH * 0.36) + (Math.random() - 0.5) * 18));
       const startX = Math.max(20, (poolW / (shuffled.length + 1)) * (i + 1) - 57);
@@ -298,7 +315,6 @@
     duck.el.classList.add('dragging');
 
     window.sound?.playQuack?.();
-    window.sound?.speakClip?.(`./audio/colors/${duck.colorId}.mp3`, duck.col.name);
 
     activeDrag = {
       duck,
@@ -456,8 +472,18 @@
       { passive: false }
     );
 
-    const onGlobalTouchEnd = () => {
+    const onGlobalTouchEnd = (ev) => {
       if (!activeDrag || !String(activeDrag.inputId).startsWith('touch-')) return;
+      if (ev.changedTouches) {
+        let matchedEnded = false;
+        for (let i = 0; i < ev.changedTouches.length; i++) {
+          if (`touch-${ev.changedTouches[i].identifier}` === activeDrag.inputId) {
+            matchedEnded = true;
+            break;
+          }
+        }
+        if (!matchedEnded) return;
+      }
       endDrag();
     };
     window.addEventListener('touchend', onGlobalTouchEnd, { passive: false });
@@ -478,24 +504,28 @@
     window.addEventListener('pointercancel', onGlobalPointerUp);
   }
 
-  function update() {
+  function update(now) {
     if (!isActive || !poolEl) return;
+    const t = typeof now === 'number' ? now : performance.now();
+    const dt = lastUpdateNow ? Math.min(0.05, Math.max(0.004, (t - lastUpdateNow) / 1000)) : 1 / 60;
+    lastUpdateNow = t;
+    const step = dt * 60;
     const poolW = poolEl.clientWidth || 900;
 
     for (let i = 0; i < ducks.length; i++) {
       const d = ducks[i];
       if (d.matched || d.dragging || d.flying) continue;
-      d.bobPhase += 0.05;
-      d.x += d.vx;
+      d.bobPhase += 0.05 * step;
+      d.x += d.vx * step;
 
       if (d.x < 14) {
         d.x = 14;
         d.vx = Math.abs(d.vx);
-        d.el.innerHTML = duckSvg(d.col, true);
+        d.el.classList.remove('facing-left');
       } else if (d.x > poolW - 128) {
         d.x = poolW - 128;
         d.vx = -Math.abs(d.vx);
-        d.el.innerHTML = duckSvg(d.col, false);
+        d.el.classList.add('facing-left');
       }
 
       const bobY = d.y + Math.sin(d.bobPhase) * 5.5;

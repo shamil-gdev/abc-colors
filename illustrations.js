@@ -2,19 +2,23 @@
 // Kawaii Lineless Flat-Vector Illustrations & Data (Toddler Amusement Park)
 // ============================================================================
 
-// 1. 10 Vivid Toddler Colors with Musical Xylophone Frequencies
+// 1. 9 Vivid Toddler Colors (Single Source of Truth Palette + Musical Frequencies)
 window.COLOR_DATA = [
-  { id: 'red', name: 'Red', hex: '#FF3B30', rim: '#C81E14', textDark: false, freq: 261.63 },
-  { id: 'orange', name: 'Orange', hex: '#FF8A00', rim: '#C96400', textDark: false, freq: 293.66 },
-  { id: 'yellow', name: 'Yellow', hex: '#FFD600', rim: '#D1A600', textDark: true, freq: 329.63 },
-  { id: 'green', name: 'Green', hex: '#24C958', rim: '#15943D', textDark: false, freq: 349.23 },
-  { id: 'cyan', name: 'Sky Blue', hex: '#22C6FF', rim: '#0B93C7', textDark: false, freq: 392.00 },
-  { id: 'blue', name: 'Blue', hex: '#2B6BFF', rim: '#1847BA', textDark: false, freq: 440.00 },
-  { id: 'purple', name: 'Purple', hex: '#8C4BFF', rim: '#6125CC', textDark: false, freq: 493.88 },
-  { id: 'pink', name: 'Pink', hex: '#FF3D9A', rim: '#C41C6D', textDark: false, freq: 523.25 },
-  { id: 'white', name: 'White', hex: '#FFFFFF', rim: '#B8CBE0', textDark: true, freq: 587.33 },
-  { id: 'brown', name: 'Brown', hex: '#8E5431', rim: '#5E341B', textDark: false, freq: 659.25 },
+  { id: 'red', name: 'Red', hex: '#FF3B30', rim: '#C81E14', light: '#FF7A73', textDark: false, freq: 261.63 },
+  { id: 'orange', name: 'Orange', hex: '#FF8A00', rim: '#C96400', light: '#FFB85C', textDark: false, freq: 293.66 },
+  { id: 'yellow', name: 'Yellow', hex: '#FFD600', rim: '#D1A600', light: '#FFF07A', textDark: true, freq: 329.63 },
+  { id: 'green', name: 'Green', hex: '#24C958', rim: '#15943D', light: '#6BE690', textDark: false, freq: 349.23 },
+  { id: 'blue', name: 'Blue', hex: '#2B6BFF', rim: '#1847BA', light: '#73A0FF', textDark: false, freq: 392.00 },
+  { id: 'purple', name: 'Purple', hex: '#8C4BFF', rim: '#6125CC', light: '#BD94FF', textDark: false, freq: 440.00 },
+  { id: 'pink', name: 'Pink', hex: '#FF3D9A', rim: '#C41C6D', light: '#FF8AC2', textDark: false, freq: 493.88 },
+  { id: 'white', name: 'White', hex: '#FFFFFF', rim: '#B8CBE0', light: '#FFFFFF', textDark: true, freq: 523.25 },
+  { id: 'brown', name: 'Brown', hex: '#8E5431', rim: '#5E341B', light: '#BD8662', textDark: false, freq: 587.33 },
 ];
+
+window.PALETTE = window.COLOR_DATA.reduce((acc, c) => {
+  acc[c.id] = c;
+  return acc;
+}, {});
 
 // 2. 10 Numbers (1..10) with Bright Distinct Balloon Colors
 window.NUMBER_DATA = [
@@ -22,11 +26,11 @@ window.NUMBER_DATA = [
   { num: 2, id: '2', word: 'Two', hex: '#FF8A00', rim: '#C96400', textDark: false },
   { num: 3, id: '3', word: 'Three', hex: '#FFD600', rim: '#C99E00', textDark: true },
   { num: 4, id: '4', word: 'Four', hex: '#24C958', rim: '#15943D', textDark: false },
-  { num: 5, id: '5', word: 'Five', hex: '#18B8FF', rim: '#0B87C4', textDark: false },
-  { num: 6, id: '6', word: 'Six', hex: '#3B66FF', rim: '#1D42C9', textDark: false },
+  { num: 5, id: '5', word: 'Five', hex: '#2B6BFF', rim: '#1847BA', textDark: false },
+  { num: 6, id: '6', word: 'Six', hex: '#00B894', rim: '#00876C', textDark: false },
   { num: 7, id: '7', word: 'Seven', hex: '#8C4BFF', rim: '#6125CC', textDark: false },
   { num: 8, id: '8', word: 'Eight', hex: '#FF3D9A', rim: '#C41C6D', textDark: false },
-  { num: 9, id: '9', word: 'Nine', hex: '#00C4B4', rim: '#008F83', textDark: false },
+  { num: 9, id: '9', word: 'Nine', hex: '#8E5431', rim: '#5E341B', textDark: false },
   { num: 10, id: '10', word: 'Ten', hex: '#FF5E3A', rim: '#C43819', textDark: false },
 ];
 
@@ -63,8 +67,9 @@ function _shapeFaceSvg(cx, cy, scale = 1, smileType = 'toothy', cheekColor = '#F
 
 function _shapeBodyMarkup(id, fill, rim, isSlot = false) {
   const slotAttrs = isSlot
-    ? `fill="#2B1B12" fill-opacity="0.76" stroke="#FFD54F" stroke-width="5" stroke-linejoin="round"`
+    ? `fill="${fill}" fill-opacity="0.28" stroke="#FFD54F" stroke-width="5" stroke-linejoin="round"`
     : `fill="${fill}"`;
+  const slotBack = isSlot ? `<rect x="0" y="0" width="0" height="0"/>` : '';
   const rimMarkup = (rimPath) => (isSlot ? '' : rimPath);
 
   switch (id) {
@@ -106,15 +111,15 @@ function _shapeBodyMarkup(id, fill, rim, isSlot = false) {
       `;
     case 'oval':
       return `
-        ${rimMarkup(`<ellipse cx="60" cy="63" rx="36" ry="49" fill="${rim}"/>`)}
-        <ellipse cx="60" cy="58" rx="36" ry="49" ${slotAttrs}/>
-        ${rimMarkup(`<ellipse cx="45" cy="30" rx="10" ry="6" transform="rotate(-32 45 30)" fill="rgba(255,255,255,0.42)"/>`)}
+        ${rimMarkup(`<ellipse cx="60" cy="63" rx="31" ry="51" fill="${rim}"/>`)}
+        <ellipse cx="60" cy="58" rx="31" ry="51" ${slotAttrs}/>
+        ${rimMarkup(`<ellipse cx="47" cy="28" rx="8" ry="12" transform="rotate(-24 47 28)" fill="rgba(255,255,255,0.42)"/>`)}
       `;
     case 'rectangle':
       return `
-        ${rimMarkup(`<rect x="8" y="31" width="104" height="64" rx="15" fill="${rim}"/>`)}
-        <rect x="8" y="25" width="104" height="64" rx="15" ${slotAttrs}/>
-        ${rimMarkup(`<rect x="18" y="33" width="34" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>`)}
+        ${rimMarkup(`<rect x="5" y="36" width="110" height="54" rx="14" fill="${rim}"/>`)}
+        <rect x="5" y="30" width="110" height="54" rx="14" ${slotAttrs}/>
+        ${rimMarkup(`<rect x="16" y="37" width="38" height="7" rx="3.5" fill="rgba(255,255,255,0.4)"/>`)}
       `;
     default:
       return `<circle cx="60" cy="60" r="46" ${slotAttrs}/>`;
@@ -143,7 +148,7 @@ function _makeShapeEntry({ id, name, hex, rim, faceY = 60, faceScale = 1, smile 
 
 // 3. 8 Cute Toddler Living Shapes
 window.SHAPE_DATA = [
-  _makeShapeEntry({ id: 'circle', name: 'Circle', hex: '#18B0FF', rim: '#0A82C7', faceY: 59, faceScale: 1.02, smile: 'toothy', cheek: '#FF8FB8' }),
+  _makeShapeEntry({ id: 'circle', name: 'Circle', hex: '#2B6BFF', rim: '#1847BA', faceY: 59, faceScale: 1.02, smile: 'toothy', cheek: '#FF8FB8' }),
   _makeShapeEntry({ id: 'heart', name: 'Heart', hex: '#FF2E55', rim: '#C21436', faceY: 54, faceScale: 0.96, smile: 'toothy', cheek: '#FFA8C5' }),
   _makeShapeEntry({ id: 'square', name: 'Square', hex: '#8C4BFF', rim: '#6125CC', faceY: 58, faceScale: 1.02, smile: 'toothy', cheek: '#FF94C2' }),
   _makeShapeEntry({ id: 'triangle', name: 'Triangle', hex: '#FFB800', rim: '#CF8E00', faceY: 73, faceScale: 0.92, smile: 'curved', cheek: '#FF758F' }),
@@ -176,7 +181,7 @@ window.ABC_DATA = [
   { letter: 'S', word: 'Sheep', color: '#2EC4B6', cardBg: '#14B8A6', strokes: ['M262 110 C220 58 125 78 132 142 C140 212 268 188 268 262 C268 332 155 340 125 292'] },
   { letter: 'T', word: 'Tiger', color: '#F97316', cardBg: '#FB8500', strokes: ['M108 78 L292 78', 'M200 78 L200 325'] },
   { letter: 'U', word: 'Unicorn', color: '#EC4899', cardBg: '#F72585', strokes: ['M125 75 L125 235 C125 342 275 342 275 235 L275 75'] },
-  { letter: 'V', word: 'Vole', color: '#A855F7', cardBg: '#9D4EDD', strokes: ['M112 75 L200 325', 'M288 75 L200 325'] },
+  { letter: 'V', word: 'Violin', color: '#A855F7', cardBg: '#9D4EDD', strokes: ['M112 75 L200 325', 'M288 75 L200 325'] },
   { letter: 'W', word: 'Whale', color: '#0284C7', cardBg: '#0096C7', strokes: ['M92 78 L144 322', 'M144 322 L200 165', 'M200 165 L256 322', 'M256 322 L308 78'] },
   { letter: 'X', word: 'X-ray fish', color: '#06B6D4', cardBg: '#0891B2', strokes: ['M118 78 L282 322', 'M282 78 L118 322'] },
   { letter: 'Y', word: 'Yak', color: '#FF453A', cardBg: '#FF5449', strokes: ['M115 78 L200 202', 'M285 78 L200 202', 'M200 202 L200 325'] },
@@ -370,26 +375,27 @@ const _ANIMAL_ART = {
     <circle cx="92" cy="92" r="4" fill="#592A11"/>
     <path d="M68 103 Q80 113 92 103" stroke="#592A11" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
-  // I: Iguana
+  // I: Iguana (elongated snout, dorsal crest spikes, long straight tail)
   i: `
-    <!-- Curled striped tail -->
-    <path d="M108 128 C142 128 144 92 122 92 C110 92 112 108 122 108" stroke="#18B888" stroke-width="13" stroke-linecap="round" fill="none"/>
+    <!-- Long straight iguana tail -->
+    <path d="M104 128 L150 120" stroke="#18B888" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <path d="M122 125 L125 117 M136 123 L139 116" stroke="#FF8A00" stroke-width="4" stroke-linecap="round"/>
     <!-- Orange Dorsal Crest Spikes -->
-    <polygon points="48,40 56,20 66,38" fill="#FF8A00"/>
-    <polygon points="66,38 76,16 86,38" fill="#FF8A00"/>
-    <polygon points="86,40 96,22 104,42" fill="#FF8A00"/>
+    <polygon points="46,42 54,22 64,40" fill="#FF8A00"/>
+    <polygon points="64,40 74,18 84,40" fill="#FF8A00"/>
+    <polygon points="84,42 94,24 102,44" fill="#FF8A00"/>
+    <polygon points="98,54 110,44 108,62" fill="#FF8A00"/>
     <!-- Body & Throat Dewlap -->
-    <ellipse cx="78" cy="126" rx="36" ry="22" fill="#2AD49A"/>
-    <ellipse cx="66" cy="108" rx="22" ry="16" fill="#A8F57A"/>
-    <!-- Head -->
-    <rect x="32" y="38" width="90" height="68" rx="34" fill="#2AD49A"/>
-    <!-- Turquoise Cheek Scale Spot -->
-    <circle cx="98" cy="84" r="9" fill="#00A8B5"/>
-    <circle cx="56" cy="68" r="12" fill="#FFFFFF"/>
-    <circle cx="96" cy="68" r="12" fill="#FFFFFF"/>
-    ${_kawaiiEyes(58, 94, 68, 6.8)}
-    <ellipse cx="42" cy="82" rx="7.5" ry="5" fill="#FF8FA3" opacity="0.7"/>
-    <path d="M52 88 Q76 100 96 88" stroke="#0F6B4B" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <ellipse cx="80" cy="122" rx="38" ry="24" fill="#2AD49A"/>
+    <ellipse cx="64" cy="108" rx="22" ry="15" fill="#A8F57A"/>
+    <!-- Elongated Iguana Head & Snout -->
+    <rect x="22" y="42" width="98" height="62" rx="31" fill="#2AD49A"/>
+    <circle cx="96" cy="82" r="9" fill="#00A8B5"/>
+    <circle cx="52" cy="68" r="12" fill="#FFFFFF"/>
+    <circle cx="88" cy="68" r="12" fill="#FFFFFF"/>
+    ${_kawaiiEyes(54, 86, 68, 6.8)}
+    <ellipse cx="36" cy="82" rx="7.5" ry="5" fill="#FF8FA3" opacity="0.7"/>
+    <path d="M36 88 Q62 99 88 88" stroke="#0F6B4B" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
   // J: Jellyfish
   j: `
@@ -532,66 +538,60 @@ const _ANIMAL_ART = {
     <ellipse cx="87" cy="88" rx="4" ry="6" fill="#8F1D47"/>
     <path d="M68 108 Q80 118 92 108" stroke="#6E1436" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
-  // Q: Quail
+  // Q: Quail (simplified plump body + unmistakable curved topknot plume)
   q: `
-    <!-- Signature Curved Quail Head Plume (Topknot!) -->
-    <path d="M80 42 C78 20 96 12 102 22 C106 30 92 36 84 42 Z" fill="#2B2D42"/>
-    <circle cx="100" cy="21" r="7" fill="#2B2D42"/>
-    <!-- Tail feathers -->
-    <polygon points="118,112 144,98 136,124" fill="#5C6784"/>
-    <!-- Plump Bird Body -->
-    <ellipse cx="78" cy="94" rx="46" ry="44" fill="#6D83B5"/>
-    <!-- Warm Tan Belly -->
-    <ellipse cx="76" cy="108" rx="34" ry="28" fill="#F5CBA7"/>
-    <path d="M62 106 Q68 112 74 106 M82 106 Q88 112 94 106" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-    <!-- Cute Wing -->
-    <ellipse cx="110" cy="96" rx="14" ry="22" transform="rotate(-15 110 96)" fill="#4E6191"/>
-    ${_kawaiiCheeks(48, 104, 84, 8.5)}
-    ${_kawaiiEyes(58, 94, 70, 7)}
-    <!-- Little Orange Beak & Feet -->
-    <polygon points="69,76 83,76 76,88" fill="#FF9500"/>
-    <line x1="66" y1="136" x2="66" y2="148" stroke="#FF9500" stroke-width="4.5" stroke-linecap="round"/>
-    <line x1="90" y1="136" x2="90" y2="148" stroke="#FF9500" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M78 44 C76 18 98 10 105 22 C109 30 92 36 84 44 Z" fill="#2B2D42"/>
+    <circle cx="102" cy="21" r="8" fill="#2B2D42"/>
+    <ellipse cx="80" cy="96" rx="48" ry="44" fill="#6D83B5"/>
+    <ellipse cx="80" cy="110" rx="34" ry="26" fill="#F7D5B4"/>
+    <ellipse cx="116" cy="98" rx="13" ry="22" transform="rotate(-14 116 98)" fill="#4E6191"/>
+    ${_kawaiiCheeks(48, 112, 88, 9)}
+    ${_kawaiiEyes(60, 100, 72, 7.5)}
+    <polygon points="72,80 88,80 80,94" fill="#FF9500"/>
+    <line x1="66" y1="138" x2="66" y2="149" stroke="#FF9500" stroke-width="5.5" stroke-linecap="round"/>
+    <line x1="94" y1="138" x2="94" y2="149" stroke="#FF9500" stroke-width="5.5" stroke-linecap="round"/>
   `,
-  // R: Rabbit
+  // R: Rabbit (warm pastel peach-pink coat so it pops vividly on white cards!)
   r: `
-    <!-- Tall Upright Bunny Ears -->
-    <ellipse cx="58" cy="36" rx="14" ry="32" transform="rotate(-8 58 36)" fill="#FFF5F8"/>
-    <ellipse cx="58" cy="38" rx="7.5" ry="22" transform="rotate(-8 58 38)" fill="#FF9EBB"/>
-    <ellipse cx="102" cy="36" rx="14" ry="32" transform="rotate(8 102 36)" fill="#FFF5F8"/>
-    <ellipse cx="102" cy="38" rx="7.5" ry="22" transform="rotate(8 102 38)" fill="#FF9EBB"/>
-    <ellipse cx="80" cy="136" rx="36" ry="18" fill="#FFF5F8"/>
-    <!-- Fluffy Bunny Head -->
-    <ellipse cx="80" cy="92" rx="46" ry="40" fill="#FFFFFF"/>
-    ${_kawaiiCheeks(46, 114, 98, 10, '#FF85A9')}
-    ${_kawaiiEyes(58, 102, 84, 7.2)}
-    <!-- Pink Nose & Cute Buck Tooth -->
-    <polygon points="74,92 86,92 80,99" fill="#FF5D8F"/>
-    <rect x="76" y="102" width="8" height="8" rx="2" fill="#FFFFFF" stroke="#1E1B2E" stroke-width="2"/>
-    <path d="M68 101 Q74 108 80 100 Q86 108 92 101" stroke="#1E1B2E" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+    <ellipse cx="58" cy="36" rx="15" ry="33" transform="rotate(-8 58 36)" fill="#F7D6E0"/>
+    <ellipse cx="58" cy="38" rx="8" ry="22" transform="rotate(-8 58 38)" fill="#FF8FB5"/>
+    <ellipse cx="102" cy="36" rx="15" ry="33" transform="rotate(8 102 36)" fill="#F7D6E0"/>
+    <ellipse cx="102" cy="38" rx="8" ry="22" transform="rotate(8 102 38)" fill="#FF8FB5"/>
+    <ellipse cx="80" cy="134" rx="40" ry="20" fill="#F2C6D4"/>
+    <ellipse cx="80" cy="92" rx="47" ry="41" fill="#FADCE6"/>
+    ${_kawaiiCheeks(46, 114, 98, 9.5, '#FF7AA8')}
+    ${_kawaiiEyes(58, 102, 82, 7.5)}
+    <polygon points="73,91 87,91 80,99" fill="#FF4D88"/>
+    <rect x="75" y="102" width="10" height="8" rx="2.5" fill="#FFFFFF"/>
+    <path d="M68 101 Q74 108 80 100 Q86 108 92 101" stroke="#3B1929" stroke-width="3.8" stroke-linecap="round" fill="none"/>
   `,
-  // S: Sheep
+  // S: Sheep (fluffy white cloud wool body of 7 overlapping circles + warm cream face + dark ears/legs)
   s: `
-    <!-- Fluffy Cloud Wool Body -->
-    <circle cx="50" cy="118" r="22" fill="#FFFFFF"/>
-    <circle cx="80" cy="124" r="24" fill="#FFFFFF"/>
-    <circle cx="110" cy="118" r="22" fill="#FFFFFF"/>
-    <circle cx="38" cy="86" r="22" fill="#FFFFFF"/>
-    <circle cx="122" cy="86" r="22" fill="#FFFFFF"/>
-    <!-- Cozy Dark Ears -->
-    <ellipse cx="32" cy="72" rx="16" ry="9" transform="rotate(-22 32 72)" fill="#4A4458"/>
-    <ellipse cx="128" cy="72" rx="16" ry="9" transform="rotate(22 128 72)" fill="#4A4458"/>
-    <!-- Warm Dark Face -->
-    <rect x="44" y="48" width="72" height="66" rx="32" fill="#4A4458"/>
-    <!-- Fluffy Top Wool Crown -->
-    <circle cx="58" cy="44" r="18" fill="#FFFFFF"/>
-    <circle cx="80" cy="38" r="21" fill="#FFFFFF"/>
-    <circle cx="102" cy="44" r="18" fill="#FFFFFF"/>
-    ${_kawaiiCheeks(54, 106, 88, 8.5, '#FF8FA3')}
-    <circle cx="62" cy="76" r="7" fill="#FFFFFF"/>
-    <circle cx="98" cy="76" r="7" fill="#FFFFFF"/>
-    ${_kawaiiEyes(63, 97, 76, 4.8)}
-    <path d="M72 92 Q80 100 88 92" stroke="#FFE3EC" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+    <!-- Little dark hooves/legs -->
+    <rect x="52" y="128" width="12" height="22" rx="6" fill="#4A4458"/>
+    <rect x="96" y="128" width="12" height="22" rx="6" fill="#4A4458"/>
+    <!-- Fluffy White Cloud Wool Body (soft blue-grey rim for crisp readability on white cards) -->
+    <g fill="#F4F6FB" stroke="#D5DCEB" stroke-width="3">
+      <circle cx="46" cy="112" r="24"/>
+      <circle cx="80" cy="120" r="26"/>
+      <circle cx="114" cy="112" r="24"/>
+      <circle cx="36" cy="82" r="24"/>
+      <circle cx="124" cy="82" r="24"/>
+      <circle cx="56" cy="54" r="22"/>
+      <circle cx="104" cy="54" r="22"/>
+    </g>
+    <!-- Dark floppy ears -->
+    <ellipse cx="30" cy="74" rx="16" ry="9" transform="rotate(-24 30 74)" fill="#4A4458"/>
+    <ellipse cx="130" cy="74" rx="16" ry="9" transform="rotate(24 130 74)" fill="#4A4458"/>
+    <!-- Warm Cream Face -->
+    <rect x="46" y="54" width="68" height="60" rx="30" fill="#FFE6CC"/>
+    <!-- Fluffy Top Wool Tuft -->
+    <circle cx="62" cy="46" r="16" fill="#F4F6FB"/>
+    <circle cx="80" cy="40" r="19" fill="#FFFFFF"/>
+    <circle cx="98" cy="46" r="16" fill="#F4F6FB"/>
+    ${_kawaiiCheeks(55, 105, 92, 8.5, '#FF8FA3')}
+    ${_kawaiiEyes(62, 98, 78, 7)}
+    <path d="M72 95 Q80 103 88 95" stroke="#4A4458" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
   // T: Tiger
   t: `
@@ -640,30 +640,27 @@ const _ANIMAL_ART = {
     <circle cx="94" cy="96" r="3" fill="#FF6BB5"/>
     <path d="M74 106 Q84 114 94 106" stroke="#4A2545" stroke-width="3.8" stroke-linecap="round" fill="none"/>
   `,
-  // V: Vole (plump meadow vole with small round ears, chubby cheeks & clover leaf)
+  // V: Violin (cheerful kawaii wooden violin with bow & smiling face!)
   v: `
-    <!-- Small Round Tucked Ears -->
-    <circle cx="44" cy="52" r="15" fill="#8F5B3C"/>
-    <circle cx="44" cy="52" r="8" fill="#F2B8B5"/>
-    <circle cx="116" cy="52" r="15" fill="#8F5B3C"/>
-    <circle cx="116" cy="52" r="8" fill="#F2B8B5"/>
-    <!-- Plump Rounded Meadow Body -->
-    <ellipse cx="80" cy="98" rx="48" ry="44" fill="#A66E4E"/>
-    <ellipse cx="80" cy="116" rx="30" ry="24" fill="#F5DEC9"/>
-    <!-- Chubby Pouched Cheeks -->
-    <circle cx="52" cy="94" r="20" fill="#B87D5B"/>
-    <circle cx="108" cy="94" r="20" fill="#B87D5B"/>
-    ${_kawaiiCheeks(46, 114, 94, 9)}
-    ${_kawaiiEyes(60, 100, 76, 6.8)}
-    <!-- Whiskers & Pink Nose -->
-    <path d="M24 88 L42 90 M24 98 L42 96 M136 88 L118 90 M136 98 L118 96" stroke="#5E3A24" stroke-width="3" stroke-linecap="round"/>
-    <ellipse cx="80" cy="86" rx="6.5" ry="5" fill="#FF6B8B"/>
-    <path d="M72 95 Q80 103 88 95" stroke="#3B1F12" stroke-width="3.6" stroke-linecap="round" fill="none"/>
-    <!-- Little Green Clover held at tummy -->
-    <circle cx="75" cy="124" r="6" fill="#24C958"/>
-    <circle cx="85" cy="124" r="6" fill="#24C958"/>
-    <circle cx="80" cy="117" r="6" fill="#24C958"/>
-    <line x1="80" y1="126" x2="83" y2="138" stroke="#15943D" stroke-width="3" stroke-linecap="round"/>
+    <!-- Bow across background -->
+    <line x1="22" y1="126" x2="142" y2="34" stroke="#8E5431" stroke-width="7" stroke-linecap="round"/>
+    <line x1="26" y1="130" x2="144" y2="40" stroke="#FFF6D6" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Violin Neck & Scroll -->
+    <rect x="72" y="14" width="16" height="44" rx="6" fill="#5E341B"/>
+    <circle cx="80" cy="16" r="9" fill="#8E5431"/>
+    <circle cx="65" cy="24" r="4.5" fill="#3B1F12"/>
+    <circle cx="95" cy="24" r="4.5" fill="#3B1F12"/>
+    <!-- Violin Figure-8 Body -->
+    <ellipse cx="80" cy="74" rx="32" ry="26" fill="#E67E22"/>
+    <ellipse cx="80" cy="116" rx="42" ry="32" fill="#E67E22"/>
+    <ellipse cx="80" cy="114" rx="33" ry="24" fill="#F39C12"/>
+    <!-- Strings & Chinrest -->
+    <line x1="76" y1="30" x2="76" y2="132" stroke="#FFF7D6" stroke-width="2.2" opacity="0.85"/>
+    <line x1="84" y1="30" x2="84" y2="132" stroke="#FFF7D6" stroke-width="2.2" opacity="0.85"/>
+    <rect x="68" y="132" width="24" height="10" rx="5" fill="#3B1F12"/>
+    ${_kawaiiCheeks(54, 106, 114, 8)}
+    ${_kawaiiEyes(64, 96, 100, 6.8)}
+    <path d="M71 114 Q80 123 89 114" stroke="#3B1F12" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
   // W: Whale
   w: `
@@ -681,73 +678,67 @@ const _ANIMAL_ART = {
     ${_kawaiiEyes(52, 90, 84, 6.8)}
     <path d="M62 96 Q72 105 82 96" stroke="#083B5E" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
-  // X: X-ray fish (translucent glowing aqua fish showing cute white spine & ribs!)
+  // X: X-ray fish (bold readable 3-bone glowing skeleton!)
   x: `
-    <!-- Bright Yellow Fins & Tail -->
-    <polygon points="62,48 88,26 98,52" fill="#FFD600"/>
-    <polygon points="66,112 90,134 98,108" fill="#FFD600"/>
-    <polygon points="120,80 148,54 142,80 148,106" fill="#FF9500"/>
-    <!-- Translucent Glowing Aqua Fish Body -->
-    <ellipse cx="76" cy="80" rx="54" ry="36" fill="#2EE6D6" opacity="0.92"/>
-    <!-- Inner X-ray Window & Cute White Fishbone Skeleton! -->
-    <ellipse cx="86" cy="80" rx="32" ry="22" fill="#0B6E78"/>
-    <line x1="60" y1="80" x2="112" y2="80" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
-    <line x1="70" y1="68" x2="70" y2="92" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-    <line x1="82" y1="65" x2="82" y2="95" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-    <line x1="94" y1="67" x2="94" y2="93" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-    <line x1="105" y1="71" x2="105" y2="89" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-    <!-- Cute Face at Front of Fish -->
-    <circle cx="42" cy="72" r="9.5" fill="#FFFFFF"/>
-    <circle cx="40" cy="72" r="5.5" fill="#1E1B2E"/>
-    <circle cx="42" cy="70" r="2" fill="#FFFFFF"/>
-    <ellipse cx="48" cy="86" rx="6.5" ry="4.5" fill="#FF7597" opacity="0.8"/>
-    <path d="M28 84 Q36 92 44 85" stroke="#084B52" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+    <polygon points="62,48 88,24 98,52" fill="#FFD600"/>
+    <polygon points="66,112 90,136 98,108" fill="#FFD600"/>
+    <polygon points="120,80 150,52 142,80 150,108" fill="#FF9500"/>
+    <ellipse cx="76" cy="80" rx="56" ry="38" fill="#22D3C5"/>
+    <ellipse cx="88" cy="80" rx="34" ry="24" fill="#0B5F69"/>
+    <line x1="60" y1="80" x2="114" y2="80" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round"/>
+    <line x1="72" y1="65" x2="72" y2="95" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+    <line x1="88" y1="63" x2="88" y2="97" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+    <line x1="104" y1="67" x2="104" y2="93" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="42" cy="72" r="10" fill="#FFFFFF"/>
+    <circle cx="40" cy="72" r="5.8" fill="#1E1B2E"/>
+    <circle cx="42" cy="70" r="2.2" fill="#FFFFFF"/>
+    <ellipse cx="48" cy="88" rx="6.5" ry="4.5" fill="#FF7597" opacity="0.8"/>
+    <path d="M28 84 Q36 92 44 85" stroke="#084B52" stroke-width="3.8" stroke-linecap="round" fill="none"/>
   `,
-  // Y: Yak
+  // Y: Yak (long shaggy dark-brown fur skirt + upward curved ivory horns + cream muzzle)
   y: `
-    <!-- Curved Golden-Cream Highland Horns! -->
-    <path d="M44 52 C20 48 16 22 32 18 C28 32 36 38 48 40 Z" fill="#F5DFAD"/>
-    <path d="M116 52 C140 48 144 22 128 18 C132 32 124 38 112 40 Z" fill="#F5DFAD"/>
-    <!-- Shaggy Russet Coat & Ears -->
-    <ellipse cx="32" cy="64" rx="14" ry="8" fill="#6E3B23"/>
-    <ellipse cx="128" cy="64" rx="14" ry="8" fill="#6E3B23"/>
-    <ellipse cx="80" cy="96" rx="48" ry="44" fill="#7D4429"/>
-    <!-- Fluffy Bangs Over Forehead -->
-    <circle cx="60" cy="48" r="16" fill="#5E301B"/>
-    <circle cx="80" cy="44" r="18" fill="#5E301B"/>
-    <circle cx="100" cy="48" r="16" fill="#5E301B"/>
-    ${_kawaiiEyes(56, 104, 72, 6.5)}
-    <!-- Wide Pink Highland Muzzle -->
-    <rect x="46" y="84" width="68" height="38" rx="19" fill="#FFB8C9"/>
-    <circle cx="64" cy="98" r="4.5" fill="#6E2B3E"/>
-    <circle cx="96" cy="98" r="4.5" fill="#6E2B3E"/>
-    <path d="M68 108 Q80 117 92 108" stroke="#5E2133" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <!-- Upward Curving Ivory Horns -->
+    <path d="M46 52 C18 46 14 14 34 14 C30 30 38 38 52 40 Z" fill="#FFF2CC"/>
+    <path d="M114 52 C142 46 146 14 126 14 C130 30 122 38 108 40 Z" fill="#FFF2CC"/>
+    <!-- Shaggy Dark-Brown Fur Skirt on Sides & Bottom -->
+    <ellipse cx="36" cy="112" rx="22" ry="30" fill="#4A2715"/>
+    <ellipse cx="124" cy="112" rx="22" ry="30" fill="#4A2715"/>
+    <ellipse cx="80" cy="126" rx="52" ry="24" fill="#59301A"/>
+    <ellipse cx="80" cy="88" rx="46" ry="44" fill="#6E3B21"/>
+    <!-- Thick Shaggy Forehead Bangs -->
+    <circle cx="58" cy="48" r="18" fill="#4A2715"/>
+    <circle cx="80" cy="44" r="20" fill="#4A2715"/>
+    <circle cx="102" cy="48" r="18" fill="#4A2715"/>
+    ${_kawaiiEyes(58, 102, 74, 7)}
+    <!-- Warm Cream Muzzle -->
+    <rect x="46" y="88" width="68" height="36" rx="18" fill="#FFE6C7"/>
+    <circle cx="64" cy="100" r="4.8" fill="#4A2715"/>
+    <circle cx="96" cy="100" r="4.8" fill="#4A2715"/>
+    <path d="M68 111 Q80 120 92 111" stroke="#4A2715" stroke-width="4" stroke-linecap="round" fill="none"/>
   `,
-  // Z: Zebra
+  // Z: Zebra (big readable head, 4 bold stripes, warm tinted ears & snout!)
   z: `
     <!-- Spiky Striped Mane -->
-    <rect x="73" y="16" width="14" height="24" rx="6" fill="#23222E"/>
-    <rect x="60" y="20" width="12" height="20" rx="5" fill="#FFFFFF"/>
-    <rect x="88" y="20" width="12" height="20" rx="5" fill="#FFFFFF"/>
-    <!-- Ears -->
-    <ellipse cx="46" cy="38" rx="10" ry="18" transform="rotate(-16 46 38)" fill="#FFFFFF"/>
-    <ellipse cx="46" cy="40" rx="5" ry="10" transform="rotate(-16 46 40)" fill="#FF9EBB"/>
-    <ellipse cx="114" cy="38" rx="10" ry="18" transform="rotate(16 114 38)" fill="#FFFFFF"/>
-    <ellipse cx="114" cy="40" rx="5" ry="10" transform="rotate(16 114 40)" fill="#FF9EBB"/>
-    <rect x="60" y="110" width="40" height="38" rx="14" fill="#FFFFFF"/>
-    <path d="M60 124 L82 124 L60 132 Z M100 130 L78 134 L100 139 Z" fill="#23222E"/>
-    <!-- Crisp White Head with Bold Charcoal Stripes -->
-    <rect x="40" y="36" width="80" height="84" rx="36" fill="#FFFFFF"/>
-    <path d="M40 56 L62 62 L40 68 Z M40 76 L58 80 L40 85 Z" fill="#23222E"/>
-    <path d="M120 56 L98 62 L120 68 Z M120 76 L102 80 L120 85 Z" fill="#23222E"/>
-    <polygon points="75,36 85,36 80,58" fill="#23222E"/>
-    <!-- Dark Charcoal Muzzle -->
-    <ellipse cx="80" cy="100" rx="32" ry="21" fill="#2D2B3A"/>
-    ${_kawaiiCheeks(48, 112, 86, 7.5)}
-    ${_kawaiiEyes(60, 100, 70, 6.5)}
-    <circle cx="68" cy="95" r="3.8" fill="#FFFFFF" opacity="0.65"/>
-    <circle cx="92" cy="95" r="3.8" fill="#FFFFFF" opacity="0.65"/>
-    <path d="M68 106 Q80 115 92 106" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <rect x="72" y="10" width="16" height="28" rx="7" fill="#23222E"/>
+    <rect x="56" y="16" width="14" height="22" rx="6" fill="#E8ECF5"/>
+    <rect x="90" y="16" width="14" height="22" rx="6" fill="#E8ECF5"/>
+    <!-- Colored Inner Ears -->
+    <ellipse cx="42" cy="36" rx="12" ry="21" transform="rotate(-18 42 36)" fill="#E8ECF5"/>
+    <ellipse cx="42" cy="38" rx="6.5" ry="12" transform="rotate(-18 42 38)" fill="#FF85A9"/>
+    <ellipse cx="118" cy="36" rx="12" ry="21" transform="rotate(18 118 36)" fill="#E8ECF5"/>
+    <ellipse cx="118" cy="38" rx="6.5" ry="12" transform="rotate(18 118 38)" fill="#FF85A9"/>
+    <!-- Big Crisp Head with 4 Bold Stripes -->
+    <rect x="30" y="34" width="100" height="96" rx="44" fill="#F4F6FB" stroke="#D5DCEB" stroke-width="3"/>
+    <path d="M30 58 L62 65 L30 73 Z M30 82 L58 88 L30 95 Z" fill="#23222E"/>
+    <path d="M130 58 L98 65 L130 73 Z M130 82 L102 88 L130 95 Z" fill="#23222E"/>
+    <polygon points="73,34 87,34 80,60" fill="#23222E"/>
+    <!-- Warm Dark-Violet Muzzle -->
+    <ellipse cx="80" cy="108" rx="38" ry="24" fill="#4A4458"/>
+    ${_kawaiiCheeks(44, 116, 92, 8.5, '#FF85A9')}
+    ${_kawaiiEyes(58, 102, 74, 7.5)}
+    <circle cx="67" cy="102" r="4.5" fill="#FFE0EB" opacity="0.78"/>
+    <circle cx="93" cy="102" r="4.5" fill="#FFE0EB" opacity="0.78"/>
+    <path d="M66 114 Q80 124 94 114" stroke="#FFFFFF" stroke-width="4.2" stroke-linecap="round" fill="none"/>
   `,
 };
 
@@ -838,7 +829,7 @@ window.PARK_ART = {
         <circle cx="0" cy="0" r="10" fill="#FFD600"/>
         <rect x="-9" y="-92" width="18" height="14" rx="6" fill="#FF5D8F"/>
         <rect x="74" y="-7" width="18" height="14" rx="6" fill="#FFB800"/>
-        <rect x="-9" y="76" width="18" height="14" rx="6" fill="#22C6FF"/>
+        <rect x="-9" y="76" width="18" height="14" rx="6" fill="#2B6BFF"/>
         <rect x="-92" y="-7" width="18" height="14" rx="6" fill="#8C4BFF"/>
         <rect x="49" y="-66" width="16" height="13" rx="5" fill="#24C958"/>
         <rect x="-65" y="-66" width="16" height="13" rx="5" fill="#FF8A00"/>
@@ -985,8 +976,8 @@ window.PARK_ART = {
         <!-- Far Right Purple Balloon -->
         <ellipse cx="206" cy="48" rx="20" ry="24" transform="rotate(14 206 48)" fill="#8C4BFF"/>
         <ellipse cx="199" cy="39" rx="5" ry="9" transform="rotate(-8 199 39)" fill="rgba(255,255,255,0.5)"/>
-        <!-- Left-Center Sky Blue Balloon with "1" -->
-        <ellipse cx="92" cy="34" rx="23" ry="27" transform="rotate(-8 92 34)" fill="#18B8FF"/>
+        <!-- Left-Center Blue Balloon with "1" -->
+        <ellipse cx="92" cy="34" rx="23" ry="27" transform="rotate(-8 92 34)" fill="#2B6BFF"/>
         <ellipse cx="83" cy="22" rx="5" ry="10" transform="rotate(-16 83 22)" fill="rgba(255,255,255,0.48)"/>
         <text x="92" y="43" text-anchor="middle" fill="#FFFFFF" font-size="24" font-weight="900" font-family="system-ui, sans-serif">1</text>
         <!-- Right-Center Sunny Yellow Balloon with "A" -->
@@ -1008,7 +999,7 @@ window.PARK_ART = {
       <rect x="192" y="110" width="12" height="62" fill="#FFD166"/>
 
       <!-- Cute Bunting Pennants Inside Booth -->
-      <polygon points="72,118 86,118 79,130" fill="#22C6FF"/>
+      <polygon points="72,118 86,118 79,130" fill="#2B6BFF"/>
       <polygon points="92,118 106,118 99,130" fill="#FFD600"/>
       <polygon points="112,118 126,118 119,130" fill="#FF3D9A"/>
       <polygon points="132,118 146,118 139,130" fill="#24C958"/>
@@ -1085,12 +1076,12 @@ window.PARK_ART = {
       <polygon points="130,10 156,18 130,26" fill="#FF3B5C"/>
       <path d="M32 100 Q130 22 228 100 Z" fill="#24C958"/>
       <path d="M66 100 Q130 26 110 100 Z" fill="#FFD600"/>
-      <path d="M150 100 Q130 26 194 100 Z" fill="#18B8FF"/>
+      <path d="M150 100 Q130 26 194 100 Z" fill="#2B6BFF"/>
       <!-- Scallop Awning -->
       <circle cx="52" cy="100" r="16" fill="#24C958"/>
       <circle cx="84" cy="100" r="16" fill="#FFD600"/>
       <circle cx="116" cy="100" r="16" fill="#FF5E3A"/>
-      <circle cx="148" cy="100" r="16" fill="#18B8FF"/>
+      <circle cx="148" cy="100" r="16" fill="#2B6BFF"/>
       <circle cx="180" cy="100" r="16" fill="#FFD600"/>
       <circle cx="208" cy="100" r="16" fill="#24C958"/>
 
@@ -1138,7 +1129,7 @@ window.PARK_ART = {
       <!-- Passenger Shapes Riding in Carriages! -->
       <!-- 1. Smiling Blue Circle in Rear Carriage -->
       <g transform="translate(22, 92)">
-        <circle cx="24" cy="26" r="21" fill="#18B0FF"/>
+        <circle cx="24" cy="26" r="21" fill="#2B6BFF"/>
         <circle cx="18" cy="23" r="3" fill="#1E1B2E"/>
         <circle cx="30" cy="23" r="3" fill="#1E1B2E"/>
         <path d="M19 30 Q24 36 29 30" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" fill="none"/>
@@ -1250,7 +1241,7 @@ window.PARK_ART = {
       </g>
 
       <!-- Paint Splatter Dots & Base Step -->
-      <circle cx="58" cy="176" r="8" fill="#22C6FF"/>
+      <circle cx="58" cy="176" r="8" fill="#2B6BFF"/>
       <circle cx="70" cy="190" r="5" fill="#FF3D9A"/>
       <rect x="40" y="196" width="180" height="14" rx="7" fill="#FFB800"/>
     </svg>`;

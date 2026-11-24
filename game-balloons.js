@@ -202,14 +202,22 @@
     if (desc.mode === 'colors') {
       const faceColor = desc.textDark ? '#2B1D4E' : '#FFFFFF';
       const cheekColor = desc.key === 'red' || desc.key === 'pink' ? '#FFE066' : '#FF8FB1';
+      const faceVariant = Math.floor(Math.random() * 3); // 0: smile, 1: wink, 2: surprised "o"
+      const rightEye =
+        faceVariant === 1
+          ? `<path d="M68 60 Q75 52 82 60" stroke="${faceColor}" stroke-width="4.4" stroke-linecap="round" fill="none"/>`
+          : `<circle cx="75" cy="59" r="5.5" fill="${faceColor}"/><circle cx="77" cy="57" r="2" fill="${desc.textDark ? '#FFFFFF' : 'rgba(255,255,255,0.9)'}"/>`;
+      const mouth =
+        faceVariant === 2
+          ? `<ellipse cx="60" cy="74" rx="6.5" ry="8" fill="${faceColor}"/>`
+          : `<path d="M51 70 Q60 80 69 70" stroke="${faceColor}" stroke-width="4.4" stroke-linecap="round" fill="none"/>`;
       centerArt = `
-        <ellipse cx="38" cy="68" rx="7.5" ry="5" fill="${cheekColor}" opacity="0.55"/>
-        <ellipse cx="82" cy="68" rx="7.5" ry="5" fill="${cheekColor}" opacity="0.55"/>
+        <ellipse cx="38" cy="68" rx="7.5" ry="5" fill="${cheekColor}" opacity="0.58"/>
+        <ellipse cx="82" cy="68" rx="7.5" ry="5" fill="${cheekColor}" opacity="0.58"/>
         <circle cx="45" cy="59" r="5.5" fill="${faceColor}"/>
         <circle cx="47" cy="57" r="2" fill="${desc.textDark ? '#FFFFFF' : 'rgba(255,255,255,0.9)'}"/>
-        <circle cx="75" cy="59" r="5.5" fill="${faceColor}"/>
-        <circle cx="77" cy="57" r="2" fill="${desc.textDark ? '#FFFFFF' : 'rgba(255,255,255,0.9)'}"/>
-        <path d="M51 70 Q60 80 69 70" stroke="${faceColor}" stroke-width="4.4" stroke-linecap="round" fill="none"/>
+        ${rightEye}
+        ${mouth}
       `;
     } else {
       const fontSize = desc.label.length >= 2 ? 50 : 60;
@@ -218,6 +226,11 @@
               text-anchor="middle"
               dominant-baseline="central"
               font-size="${fontSize}"
+              fill="#FFFFFF"
+              stroke="rgba(36, 20, 68, 0.72)"
+              stroke-width="6"
+              paint-order="stroke"
+              stroke-linejoin="round"
               class="balloon-label-text">${desc.label}</text>
       `;
     }
@@ -336,7 +349,7 @@
 
     const y = fromBottom
       ? fieldH + 14 + Math.random() * 54
-      : 28 + ((slotIndex % 3) * 0.24 + Math.random() * 0.18) * Math.max(120, fieldH - height - 30);
+      : 16 + ((slotIndex % 4) * 0.23 + Math.random() * 0.14) * Math.max(120, fieldH - height - 24);
 
     const el = document.createElement('div');
     el.className = 'carnival-balloon';

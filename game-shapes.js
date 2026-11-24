@@ -383,7 +383,7 @@
         25%  { transform: rotate(-12deg) scale(1.03); }
         58%  { transform: rotate(13deg) scale(1.04); }
         82%  { transform: rotate(-8deg) scale(1.02); }
-        100% { transform: translateY(110px) scale(0.9) opacity(0); opacity: 0; }
+        100% { transform: translateY(110px) scale(0.9); opacity: 0; }
       }
 
       .ship-deck-crew {
@@ -508,7 +508,6 @@
         z-index: 2;
         display: grid;
         place-items: center;
-        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.24));
       }
 
       @keyframes starburstTwinkle {
@@ -1349,12 +1348,8 @@
     progressPillEl = document.getElementById('shapes-progress-pill');
     companionEl = document.getElementById('shapes-companion');
 
-    if (!waves.length || roundCompleted || !slotRecords.length || waveTransitioning) {
-      startNewRide(roundCompleted);
-    } else {
-      updateProgressPill();
-      resetIdleHandTimer();
-    }
+    // Always start a clean fresh ride on entry so exiting mid-flight can never leave stuck shapes
+    startNewRide(false);
 
     window.sound?.speakClip?.('./audio/phrases/shapes_ride.mp3', 'Match the shapes!');
   }

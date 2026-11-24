@@ -3,6 +3,22 @@
    Designed for 2–4yo toddlers on iPad Landscape (1180×820) & Portrait (820×1180)
    ========================================================================== */
 
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/fredoka-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/fredoka-700.woff2') format('woff2');
+}
+
 :root {
   --font-kid: 'Fredoka', ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
   --hub-sky: #48B8F0;
@@ -10,10 +26,10 @@
   --purple-bg: #412978;
   --purple-deep: #2E1A59;
   --gold-paint: #FFD026;
-  --safe-top: env(safe-area-inset-top, 12px);
-  --safe-bottom: env(safe-area-inset-bottom, 12px);
-  --safe-left: env(safe-area-inset-left, 14px);
-  --safe-right: env(safe-area-inset-right, 14px);
+  --safe-top: env(safe-area-inset-top, 4px);
+  --safe-bottom: env(safe-area-inset-bottom, 4px);
+  --safe-left: env(safe-area-inset-left, 6px);
+  --safe-right: env(safe-area-inset-right, 6px);
 }
 
 * {
@@ -120,7 +136,7 @@ button {
    ========================================================================== */
 
 .screen-hub {
-  background: linear-gradient(180deg, #47B6F5 0%, #98E6FF 48%, #58DA5B 49%, #2EAD44 100%);
+  background: linear-gradient(180deg, #4AC7FF 0%, #A3ECFF 60%, #58DA5B 100%);
   padding: 0;
 }
 
@@ -164,8 +180,8 @@ button {
 }
 
 .icon-pill-btn {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: #FFFFFF;
   border: 3.5px solid rgba(255, 255, 255, 0.9);
@@ -179,7 +195,7 @@ button {
   box-shadow: 0 2px 0 rgba(35, 75, 40, 0.26);
 }
 
-/* Horizontal Scrollable Park Promenade */
+/* Panoramic Park Promenade — All 5 Rides Visible at Once on iPad Landscape, 2 Rows on Portrait */
 .park-scroll-viewport {
   position: relative;
   width: 100%;
@@ -196,8 +212,8 @@ button {
 
 .park-world-canvas {
   position: relative;
-  width: 2200px;
-  min-width: 100%;
+  width: 100%;
+  min-width: 1120px;
   height: 100%;
 }
 
@@ -222,39 +238,46 @@ button {
   height: 100%;
   display: flex;
   align-items: flex-end;
-  justify-content: flex-start;
-  gap: 58px;
-  padding: 0 88px calc(var(--safe-bottom) + 64px) 72px;
+  justify-content: space-evenly;
+  gap: 10px;
+  padding: 0 24px calc(var(--safe-bottom) + 64px) 24px;
 }
 
 .park-pavilion-btn {
   position: relative;
-  flex: 0 0 auto;
-  width: 344px;
+  flex: 1 1 0;
+  max-width: 240px;
+  min-width: 196px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 6px;
-  border-radius: 36px;
+  padding: 4px;
+  border-radius: 32px;
   touch-action: pan-x;
   transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: pavilionBreathe 3.4s ease-in-out infinite;
 }
 
 /* Natural varied depth along the park lawn — grounded, never floating! */
-.pavilion-balloons { margin-bottom: 42px; }
-.pavilion-ducks    { margin-bottom: 12px; }
-.pavilion-abc      { margin-bottom: 48px; }
-.pavilion-shapes   { margin-bottom: 14px; }
-.pavilion-trace    { margin-bottom: 40px; }
+.pavilion-balloons { margin-bottom: 34px; animation-delay: 0s; }
+.pavilion-abc      { margin-bottom: 10px; animation-delay: 0.7s; }
+.pavilion-ducks    { margin-bottom: 38px; animation-delay: 1.4s; }
+.pavilion-shapes   { margin-bottom: 12px; animation-delay: 2.1s; }
+.pavilion-trace    { margin-bottom: 34px; animation-delay: 2.8s; }
+
+@keyframes pavilionBreathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.022); }
+}
 
 .park-pavilion-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.94) !important;
 }
 
 .pavilion-art {
-  width: 326px;
-  height: 290px;
+  width: min(100%, 226px);
+  height: clamp(190px, 28vh, 240px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -268,23 +291,22 @@ button {
 }
 
 .pavilion-label-pill {
-  margin-top: -10px;
+  margin-top: -8px;
   position: relative;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 26px;
+  padding: 6px 18px;
   border-radius: 999px;
   background: #FFFFFF;
   color: #2B1D4E;
-  border: 4.5px solid #FFD026;
-  font-size: 26px;
+  border: 4px solid #FFD026;
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   white-space: nowrap;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
 }
 
 .pavilion-balloons .pavilion-label-pill { border-color: #FF5E7E; }
@@ -293,28 +315,43 @@ button {
 .pavilion-shapes .pavilion-label-pill   { border-color: #2EC4B6; }
 .pavilion-trace .pavilion-label-pill    { border-color: #9B5DE5; }
 
-/* Subtle Right-Edge Scroll Hint Arrow */
+/* Hide scroll hint when all 5 rides fit on screen */
 .park-scroll-hint {
-  position: absolute;
-  right: calc(var(--safe-right) + 18px);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  border: 4px solid #FFD026;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.16);
-  animation: scrollHintPulse 1.6s ease-in-out infinite;
+  display: none;
 }
 
-@keyframes scrollHintPulse {
-  0%, 100% { transform: translateY(-50%) translateX(0); opacity: 0.9; }
-  50%      { transform: translateY(-50%) translateX(8px); opacity: 1; }
+/* Portrait iPad: Clean 2-Row Park Plaza (3 top + 2 bottom, zero scroll!) */
+@media (orientation: portrait) {
+  .park-scroll-viewport {
+    overflow-x: hidden;
+  }
+  .park-world-canvas {
+    min-width: 100%;
+  }
+  .park-promenade-row {
+    flex-wrap: wrap;
+    align-content: flex-end;
+    justify-content: center;
+    gap: 18px 20px;
+    padding: 90px 24px calc(var(--safe-bottom) + 46px) 24px;
+  }
+  .park-pavilion-btn {
+    flex: 0 0 28%;
+    max-width: 248px;
+    min-width: 210px;
+    margin-bottom: 0 !important;
+  }
+  .pavilion-art {
+    height: 210px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* Cartoon Pointer Hand */
@@ -383,19 +420,45 @@ button {
 }
 
 .home-park-btn {
+  position: relative;
   width: 66px;
   height: 66px;
   border-radius: 24px;
   background: #FFFFFF;
   display: grid;
   place-items: center;
-  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.22), 0 10px 20px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.22);
   flex-shrink: 0;
-  transition: transform 0.1s;
+  transition: transform 0.12s;
 }
+.home-park-btn.holding,
 .home-park-btn:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.22);
+  transform: translateY(4px) scale(0.95);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.22);
+}
+.home-hold-ring {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  transform: rotate(-90deg);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.home-park-btn.holding .home-hold-ring {
+  opacity: 1;
+}
+.home-hold-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 5;
+}
+.home-hold-fill {
+  fill: none;
+  stroke: #FFB800;
+  stroke-width: 5.5;
+  stroke-linecap: round;
 }
 
 .progress-pill {
@@ -419,21 +482,39 @@ button {
 
 .corner-companion {
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 16px;
-  width: 106px;
-  height: 92px;
+  width: 86px;
+  height: 74px;
   z-index: 24;
   cursor: pointer;
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.22));
+  filter: none;
 }
 .corner-companion.right {
   left: auto;
   right: 16px;
 }
 .corner-companion.cheer {
-  transform: translateY(-22px) scale(1.14) rotate(5deg);
+  transform: translateY(-20px) scale(1.14) rotate(5deg);
+}
+.corner-companion.sleeping {
+  opacity: 0.88;
+  animation: companionSleep 2.8s ease-in-out infinite;
+}
+.corner-companion.sleeping::after {
+  content: 'zZz';
+  position: absolute;
+  top: -18px;
+  right: 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFE066;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+@keyframes companionSleep {
+  0%, 100% { transform: translateY(4px) scale(0.97); }
+  50%      { transform: translateY(8px) scale(0.95); }
 }
 
 /* ==========================================================================
@@ -457,7 +538,7 @@ button {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  padding: 6px 8px 98px 8px;
+  padding: 6px 8px 116px 8px;
   scrollbar-width: none;
 }
 .abc-flip-grid::-webkit-scrollbar {
@@ -469,7 +550,7 @@ button {
 }
 
 .flip-card {
-  height: 212px;
+  height: 232px;
   perspective: 1000px;
   -webkit-perspective: 1000px;
   cursor: pointer;
@@ -552,20 +633,20 @@ button {
 
 .flip-back-badge {
   align-self: flex-start;
-  font-size: 22px;
+  font-size: 27px;
   font-weight: 700;
   line-height: 1;
   margin-left: 4px;
 }
 
 .flip-back-art {
-  width: 112px;
-  height: 112px;
-  margin-top: -6px;
+  width: 142px;
+  height: 142px;
+  margin-top: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 5px 0 rgba(0, 0, 0, 0.08));
+  filter: none;
 }
 
 .flip-back-art svg {
@@ -576,7 +657,7 @@ button {
 }
 
 .flip-back-word {
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.1;
   color: #2B1D4E;
@@ -677,7 +758,7 @@ button {
   height: 100%;
   overflow: visible;
   touch-action: none;
-  filter: drop-shadow(0 12px 24px rgba(18, 8, 42, 0.35));
+  filter: none;
 }
 
 .trace-hand-hint {
@@ -857,7 +938,7 @@ button {
   align-items: center;
   justify-content: center;
   animation: trophyFloat 2.2s ease-in-out infinite;
-  filter: drop-shadow(0 10px 12px rgba(180, 120, 0, 0.24));
+  filter: none;
 }
 
 .celebration-badge svg {

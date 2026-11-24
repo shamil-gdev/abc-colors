@@ -14,10 +14,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet" />
-
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -55,7 +51,7 @@
           <!-- Wide Illustrated Park Scenery -->
           <div id="park-scenery-bg" class="park-scenery-bg" aria-hidden="true"></div>
 
-          <!-- Grounded Attractions Standing Along the Park Promenade -->
+          <!-- Grounded Attractions Standing Along the Park Promenade (Order: Balloons -> ABC -> Ducks -> Shapes -> Draw) -->
           <main class="park-promenade-row" aria-label="Park Attractions">
             <!-- Ride 1: Balloon Shop -->
             <button class="park-pavilion-btn pavilion-balloons" data-target="colors" aria-label="Balloon Shop: Colors, Letters and Numbers">
@@ -65,19 +61,19 @@
               </div>
             </button>
 
-            <!-- Ride 2: Color Duck Pond Booth -->
-            <button class="park-pavilion-btn pavilion-ducks" data-target="ducks" aria-label="Color Duck Pond">
-              <div class="pavilion-art" id="ride-art-ducks"></div>
-              <div class="pavilion-label-pill">
-                <span class="pavilion-label-text">DUCKS</span>
-              </div>
-            </button>
-
-            <!-- Ride 3: ABC Animal Cards -->
+            <!-- Ride 2: ABC Animal Cards -->
             <button class="park-pavilion-btn pavilion-abc" data-target="abc" aria-label="ABC Animal Cards">
               <div class="pavilion-art" id="ride-art-abc"></div>
               <div class="pavilion-label-pill">
                 <span class="pavilion-label-text">A B C</span>
+              </div>
+            </button>
+
+            <!-- Ride 3: Color Duck Pond Booth -->
+            <button class="park-pavilion-btn pavilion-ducks" data-target="ducks" aria-label="Color Duck Pond">
+              <div class="pavilion-art" id="ride-art-ducks"></div>
+              <div class="pavilion-label-pill">
+                <span class="pavilion-label-text">DUCKS</span>
               </div>
             </button>
 
@@ -123,8 +119,8 @@
       <!-- Large 3D Flipping A–Z Animal Cards Grid -->
       <div class="abc-flip-grid" id="abc-flip-grid" aria-label="Flip Letters A to Z"></div>
 
-      <!-- Peeking Companion Mascot -->
-      <div class="corner-companion" id="abc-companion"></div>
+      <!-- Peeking Companion Mascot (bottom-right, out of way of cards) -->
+      <div class="corner-companion right" id="abc-companion"></div>
     </section>
 
     <!-- ==================== SCREEN 2: BALLOON POP (COLORS / ABC / 123) ==================== -->

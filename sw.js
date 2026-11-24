@@ -1,8 +1,8 @@
 // Offline-First Service Worker for iPad Home Screen Web App
-const CACHE_NAME = 'sunny-park-abc-v4';
+const CACHE_NAME = 'sunny-park-abc-v5';
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const COLORS = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'white', 'brown'];
+const COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'white', 'brown'];
 const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 const SHAPES = ['circle', 'square', 'triangle', 'heart', 'star', 'diamond', 'oval', 'rectangle'];
 const PHRASES = [
@@ -10,8 +10,6 @@ const PHRASES = [
   'lets_play',
   'abc_time',
   'pop_balloons',
-  'pop_bubbles',
-  'magic_letters',
   'yay',
   'awesome',
   'wonderful',
@@ -37,6 +35,8 @@ const PRECACHE_URLS = [
   './game-abc-trace.js',
   './app.js',
   './manifest.json',
+  './fonts/fredoka-600.woff2',
+  './fonts/fredoka-700.woff2',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -90,23 +90,22 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Network-first for .html, .js, .css (and manifest) so local dev updates appear immediately,
-  // falling back cleanly to precache when offline on iPad.
+  // Stale-while-revalidate for .html, .js, .css, .json so startup is instant even on slow Wi-Fi
   if (isCodeOrDocRequest(event.request, url)) {
     event.respondWith(
-      fetch(event.request)
-        .then((res) => {
-          if (res && res.status === 200) {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-          }
-          return res;
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(event.request, { ignoreSearch: true }).then((cached) => {
+          const networkPromise = fetch(event.request)
+            .then((res) => {
+              if (res && res.status === 200) {
+                cache.put(event.request, res.clone());
+              }
+              return res;
+            })
+            .catch(() => cached || (event.request.mode === 'navigate' ? cache.match('./index.html') : undefined));
+          return cached || networkPromise;
         })
-        .catch(() =>
-          caches
-            .match(event.request, { ignoreSearch: true })
-            .then((cached) => cached || (event.request.mode === 'navigate' ? caches.match('./index.html') : undefined))
-        )
+      )
     );
     return;
   }
