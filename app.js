@@ -16,9 +16,11 @@
   const canvas = document.getElementById('fx-canvas');
   const ctx = canvas.getContext('2d');
   const particles = [];
+  const MAX_PARTICLES = 56;
+  let canvasDirty = false;
 
   function resizeCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -30,27 +32,29 @@
     x = window.innerWidth / 2,
     y = window.innerHeight / 2,
     baseColor = null,
-    count = 24
+    count = 20
   ) {
     const palette = baseColor
       ? [baseColor, '#FFD600', '#FFFFFF', baseColor, '#FF3D9A', '#22C6FF']
       : ['#FF3B30', '#FFD600', '#24C958', '#22C6FF', '#8C4BFF', '#FF3D9A', '#FF8A00'];
 
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.42;
-      const speed = 3.5 + Math.random() * 8.8;
+    const actualCount = Math.min(count, 24);
+    for (let i = 0; i < actualCount; i++) {
+      if (particles.length >= MAX_PARTICLES) particles.shift();
+      const angle = (Math.PI * 2 * i) / actualCount + (Math.random() - 0.5) * 0.42;
+      const speed = 3.5 + Math.random() * 8.2;
       particles.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 2.4,
-        size: 7 + Math.random() * 9,
+        size: 7 + Math.random() * 8,
         color: palette[i % palette.length],
         shape: i % 3 === 0 ? 'star' : i % 2 === 0 ? 'circle' : 'rect',
         rot: Math.random() * Math.PI * 2,
         vrot: (Math.random() - 0.5) * 0.25,
         life: 1,
-        decay: 0.017 + Math.random() * 0.014,
+        decay: 0.022 + Math.random() * 0.015,
       });
     }
   }
@@ -81,6 +85,14 @@
   }
 
   function updateParticles() {
+    if (particles.length === 0) {
+      if (canvasDirty) {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        canvasDirty = false;
+      }
+      return;
+    }
+    canvasDirty = true;
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -114,9 +126,7 @@
         } else if (p.shape === 'star') {
           drawStar(0, 0, p.size * 0.76);
         } else {
-          ctx.beginPath();
-          ctx.roundRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7, 4);
-          ctx.fill();
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
         }
       }
       ctx.restore();
@@ -414,14 +424,18 @@
 
   // ==================== MAIN 60FPS ANIMATION LOOP ====================
   function loop(now) {
-    if (state.screen === 'colors') {
-      window.BalloonsGame?.update?.(now);
-    } else if (state.screen === 'trace') {
-      window.TraceGame?.update?.(now);
-    } else if (state.screen === 'shapes') {
-      window.ShapesGame?.update?.(now);
-    }
-    updateParticles();
+    try {
+      if (state.screen === 'colors') {
+        window.BalloonsGame?.update?.(now);
+      } else if (state.screen === 'trace') {
+        window.TraceGame?.update?.(now);
+      } else if (state.screen === 'shapes') {
+        window.ShapesGame?.update?.(now);
+      }
+    } catch (_) {}
+    try {
+      updateParticles();
+    } catch (_) {}
     requestAnimationFrame(loop);
   }
 

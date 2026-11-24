@@ -1,5 +1,5 @@
 // Offline-First Service Worker for iPad Home Screen Web App
-const CACHE_NAME = 'sunny-park-abc-v2';
+const CACHE_NAME = 'sunny-park-abc-v3';
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const COLORS = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'white', 'brown'];

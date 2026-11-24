@@ -212,11 +212,78 @@
         window.sound?.speakClip(`./audio/words/${item.letter.toLowerCase()}.mp3`, item.word);
       });
 
-      // SVG Pointer Tracing Handlers
-      traceSvg.addEventListener('pointerdown', onPointerDown);
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerup', onPointerUp);
-      window.addEventListener('pointercancel', onPointerUp);
+      // Unified Touch (iPad Safari) + Pointer (Desktop/Mouse) Tracing Handlers
+      const targetEl = boardEl || traceSvg;
+
+      // Explicit non-passive touch listeners so iPadOS Safari NEVER cancels finger drag
+      targetEl.addEventListener(
+        'touchstart',
+        (ev) => {
+          if (!document.getElementById('screen-trace')?.classList.contains('active')) return;
+          if (!ev.touches || ev.touches.length === 0) return;
+          ev.preventDefault();
+          const t = ev.touches[0];
+          startTraceInput(t.clientX, t.clientY, `touch-${t.identifier}`);
+        },
+        { passive: false }
+      );
+
+      targetEl.addEventListener(
+        'touchmove',
+        (ev) => {
+          if (!isPointerDown || !document.getElementById('screen-trace')?.classList.contains('active')) return;
+          if (!ev.touches || ev.touches.length === 0) return;
+          ev.preventDefault();
+          let t = ev.touches[0];
+          for (let i = 0; i < ev.touches.length; i++) {
+            if (`touch-${ev.touches[i].identifier}` === activePointerId) {
+              t = ev.touches[i];
+              break;
+            }
+          }
+          moveTraceInput(t.clientX, t.clientY);
+        },
+        { passive: false }
+      );
+
+      const onTouchEnd = (ev) => {
+        if (!isPointerDown || !String(activePointerId || '').startsWith('touch-')) return;
+        if (ev.touches && ev.touches.length > 0) {
+          for (let i = 0; i < ev.touches.length; i++) {
+            if (`touch-${ev.touches[i].identifier}` === activePointerId) return;
+          }
+        }
+        endTraceInput();
+      };
+      targetEl.addEventListener('touchend', onTouchEnd, { passive: false });
+      targetEl.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+      // Pointer events for mouse / Apple Pencil / non-touch devices
+      targetEl.addEventListener('pointerdown', (ev) => {
+        if (ev.pointerType === 'touch') return; // handled natively above for Safari reliability
+        if (!document.getElementById('screen-trace')?.classList.contains('active')) return;
+        ev.preventDefault();
+        try { targetEl.setPointerCapture(ev.pointerId); } catch (_) {}
+        startTraceInput(ev.clientX, ev.clientY, `ptr-${ev.pointerId}`);
+      });
+
+      window.addEventListener('pointermove', (ev) => {
+        if (ev.pointerType === 'touch') return;
+        if (!isPointerDown || activePointerId !== `ptr-${ev.pointerId}`) return;
+        moveTraceInput(ev.clientX, ev.clientY);
+      });
+
+      window.addEventListener('pointerup', (ev) => {
+        if (ev.pointerType === 'touch') return;
+        if (!isPointerDown || activePointerId !== `ptr-${ev.pointerId}`) return;
+        endTraceInput();
+      });
+
+      window.addEventListener('pointercancel', (ev) => {
+        if (ev.pointerType === 'touch') return;
+        if (!isPointerDown || activePointerId !== `ptr-${ev.pointerId}`) return;
+        endTraceInput();
+      });
 
       loadLetter(0, false);
     }
@@ -287,8 +354,30 @@
       for (let i = 0; i <= PATH_SAMPLES; i++) {
         const t = i / PATH_SAMPLES;
         const pt = pathEl.getPointAtLength(t * totalLen);
-        sampledPoints.push({ t, x: pt.x, y: pt.y });
+        sampledPoints.push({ t, x: pt.x, y: pt.y, angleDeg: 0 });
       }
+      for (let i = 0; i < sampledPoints.length; i++) {
+        const prev = sampledPoints[Math.max(0, i - 1)];
+        const next = sampledPoints[Math.min(sampledPoints.length - 1, i + 1)];
+        sampledPoints[i].angleDeg = (Math.atan2(next.y - prev.y, next.x - prev.x) * 180) / Math.PI;
+      }
+    }
+
+    // Pure-JS interpolation over precomputed samples (zero SVG DOM calls per frame!)
+    function sampleAt(t) {
+      if (sampledPoints.length === 0) return { x: 200, y: 200, angleDeg: 0 };
+      const clamped = Math.max(0, Math.min(1, t));
+      const fIdx = clamped * PATH_SAMPLES;
+      const i0 = Math.floor(fIdx);
+      const i1 = Math.min(PATH_SAMPLES, i0 + 1);
+      const frac = fIdx - i0;
+      const a = sampledPoints[i0];
+      const b = sampledPoints[i1];
+      return {
+        x: a.x + (b.x - a.x) * frac,
+        y: a.y + (b.y - a.y) * frac,
+        angleDeg: a.angleDeg,
+      };
     }
 
     function renderStrokeSvg() {
@@ -300,6 +389,16 @@
       sampledPoints = [];
 
       const ns = 'http://www.w3.org/2000/svg';
+
+      // 0. Full-area transparent hit target so iPad Safari always captures touches inside the SVG
+      const hitRect = document.createElementNS(ns, 'rect');
+      hitRect.setAttribute('x', '0');
+      hitRect.setAttribute('y', '0');
+      hitRect.setAttribute('width', '400');
+      hitRect.setAttribute('height', '400');
+      hitRect.setAttribute('fill', 'transparent');
+      hitRect.setAttribute('pointer-events', 'all');
+      traceSvg.appendChild(hitRect);
 
       // 1. Base translucent tracks + dashed center guides for all strokes
       item.strokes.forEach((d) => {
@@ -379,16 +478,10 @@
       const dist = clamped * activeStrokeLen;
       activeFillEl.setAttribute('stroke-dashoffset', `${Math.max(0, activeStrokeLen - dist)}`);
 
-      const pt = activePathEl.getPointAtLength(dist);
-      const dBack = Math.max(0, dist - 6);
-      const dFwd = Math.min(activeStrokeLen, dist + 8);
-      const ptA = activePathEl.getPointAtLength(dBack);
-      const ptB = activePathEl.getPointAtLength(dFwd);
-      const angleDeg = (Math.atan2(ptB.y - ptA.y, ptB.x - ptA.x) * 180) / Math.PI;
-
+      const pt = sampleAt(clamped);
       activeHandleGroup.setAttribute(
         'transform',
-        `translate(${pt.x.toFixed(2)}, ${pt.y.toFixed(2)}) rotate(${angleDeg.toFixed(2)})`
+        `translate(${pt.x.toFixed(2)}, ${pt.y.toFixed(2)}) rotate(${pt.angleDeg.toFixed(2)})`
       );
     }
 
@@ -424,14 +517,14 @@
         }
       }
 
-      // Local refinement (+/- 1 sample interval in 10 micro-steps -> ~1/1800 precision)
+      // Pure-JS local refinement between adjacent precomputed samples (zero SVG DOM calls!)
       const span = 1 / PATH_SAMPLES;
       const rStart = Math.max(minT, bestT - span);
       const rEnd = Math.min(maxT, bestT + span);
-      const microSteps = 10;
+      const microSteps = 8;
       for (let k = 0; k <= microSteps; k++) {
         const t = rStart + ((rEnd - rStart) * k) / microSteps;
-        const pt = activePathEl.getPointAtLength(t * activeStrokeLen);
+        const pt = sampleAt(t);
         const d = Math.hypot(px - pt.x, py - pt.y);
         if (d < minD) {
           minD = d;
@@ -442,10 +535,7 @@
       return { bestT, minD };
     }
 
-    function onPointerDown(ev) {
-      if (!document.getElementById('screen-trace')?.classList.contains('active')) return;
-      ev.preventDefault();
-
+    function startTraceInput(clientX, clientY, inputId) {
       if (completed) {
         loadLetter(traceIndex + 1, true);
         return;
@@ -453,18 +543,18 @@
       if (strokeFinishing || !activePathEl) return;
 
       isPointerDown = true;
-      activePointerId = ev.pointerId;
-      lastClientX = ev.clientX;
-      lastClientY = ev.clientY;
+      activePointerId = inputId;
+      lastClientX = clientX;
+      lastClientY = clientY;
       handHintEl?.classList.add('hidden');
       clearTimeout(idleTimer);
 
-      const p = clientToSvgPoint(ev.clientX, ev.clientY);
+      const p = clientToSvgPoint(clientX, clientY);
       const handlePt = activePathEl.getPointAtLength(displayProgress * activeStrokeLen);
       const distToHandle = Math.hypot(p.x - handlePt.x, p.y - handlePt.y);
       const { bestT, minD } = projectOntoActiveStroke(p.x, p.y);
 
-      if (distToHandle < 78) {
+      if (distToHandle < 85) {
         // Grabbed near the green chevron handle: start smooth continuous drag!
         if (bestT > targetProgress) {
           targetProgress = Math.min(1, bestT);
@@ -474,7 +564,7 @@
           window.sound?.startDrawSound?.();
           window.sound?.updateDrawSound?.(0.25, displayProgress);
         }
-      } else if (minD < 110 || distToHandle < 135) {
+      } else if (minD < 120 || distToHandle < 145) {
         // Forgiving toddler tap ahead along the stroke: glide smoothly instead of teleporting!
         const boost = Math.max(bestT, targetProgress + 0.34);
         targetProgress = Math.min(1, boost);
@@ -483,7 +573,7 @@
           window.sound?.startDrawSound?.();
           window.sound?.updateDrawSound?.(0.55, displayProgress);
         }
-        window.FX?.burstConfetti(ev.clientX, ev.clientY, GOLDEN_PAINT, 6);
+        window.FX?.burstConfetti(clientX, clientY, GOLDEN_PAINT, 6);
       } else {
         // Even a tap anywhere on the letter board nudges progress smoothly forward for 2yo play!
         targetProgress = Math.min(1, targetProgress + 0.28);
@@ -500,18 +590,17 @@
       }
     }
 
-    function onPointerMove(ev) {
+    function moveTraceInput(clientX, clientY) {
       if (!isPointerDown || completed || strokeFinishing || !activePathEl) return;
-      if (activePointerId !== null && ev.pointerId !== activePointerId) return;
       if (!document.getElementById('screen-trace')?.classList.contains('active')) return;
 
-      lastClientX = ev.clientX;
-      lastClientY = ev.clientY;
+      lastClientX = clientX;
+      lastClientY = clientY;
 
-      const p = clientToSvgPoint(ev.clientX, ev.clientY);
+      const p = clientToSvgPoint(clientX, clientY);
       const { bestT, minD } = projectOntoActiveStroke(p.x, p.y);
 
-      if (minD < 112 && bestT > targetProgress) {
+      if (minD < 125 && bestT > targetProgress) {
         targetProgress = Math.min(1, bestT);
         if (targetProgress >= 0.95) {
           targetProgress = 1;
@@ -520,9 +609,8 @@
       }
     }
 
-    function onPointerUp(ev) {
+    function endTraceInput() {
       if (!isPointerDown) return;
-      if (activePointerId !== null && ev.pointerId !== activePointerId) return;
       isPointerDown = false;
       activePointerId = null;
       stopDrawAudio();

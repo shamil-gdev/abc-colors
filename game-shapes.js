@@ -124,12 +124,10 @@
         touch-action: none;
         will-change: transform;
         z-index: 18;
-        filter: drop-shadow(0 10px 14px rgba(17, 45, 88, 0.24));
       }
       .shape-actor.dragging {
         cursor: grabbing;
         z-index: 60;
-        filter: drop-shadow(0 18px 24px rgba(17, 45, 88, 0.34));
       }
       .shape-actor.spring-back {
         transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);

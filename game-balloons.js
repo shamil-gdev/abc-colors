@@ -75,7 +75,6 @@
         touch-action: none;
         user-select: none;
         -webkit-user-select: none;
-        filter: drop-shadow(0 10px 14px rgba(13, 56, 104, 0.22));
       }
 
       .carnival-balloon-inner {

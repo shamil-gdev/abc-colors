@@ -1333,7 +1333,7 @@ window.PARK_ART = {
   pointerHand() {
     return `
       <svg viewBox="0 0 90 100" width="68" height="76">
-        <g filter="drop-shadow(0 6px 8px rgba(0,0,0,0.22))">
+        <g>
           <path d="M36 14 C36 7 47 7 47 14 L47 42 C51 40 57 42 58 47 C63 46 68 49 69 54 C74 54 77 58 76 65 L73 79 C70 89 59 94 46 94 L37 94 C25 94 18 85 18 74 L18 57 C18 51 25 49 29 54 L36 62 Z"
                 fill="#FFFFFF" stroke="#1E1B2E" stroke-width="4.5" stroke-linejoin="round"/>
           <rect x="30" y="84" width="34" height="10" rx="5" fill="#FFB800" stroke="#1E1B2E" stroke-width="3.5"/>
