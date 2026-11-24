@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ABC Park" />
+  <meta name="theme-color" content="#48B8F0" id="meta-theme-color" />
+  <title>Sunny Park — ABC, Colors &amp; Shapes</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Particle & Confetti Overlay Canvas -->
+    <canvas id="fx-canvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+    <!-- Transition Swoosh Overlay -->
+    <div id="scene-curtain" class="scene-curtain" aria-hidden="true"></div>
+
+    <!-- ==================== SCREEN 0: ILLUSTRATED AMUSEMENT PARK MAP ==================== -->
+    <section id="screen-hub" class="screen screen-hub active" aria-label="Sunny Park Map">
+      <!-- Full-bleed Illustrated Amusement Park Scenery -->
+      <div id="park-scenery-bg" class="park-scenery-bg" aria-hidden="true"></div>
+
+      <!-- Top Park Sign & Sound Toggle -->
+      <header class="hub-topbar">
+        <div class="park-badge" id="park-title-pill">
+          <span class="park-sun-dot" aria-hidden="true"></span>
+          <span>SUNNY PARK</span>
+        </div>
+
+        <button id="btn-sound-toggle" class="icon-pill-btn" aria-label="Toggle Sound">
+          <svg id="icon-sound-on" viewBox="0 0 36 36" width="28" height="28">
+            <path d="M7 14h6l8-7v22l-8-7H7a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" fill="#432C7A"/>
+            <path d="M25 12a7 7 0 0 1 0 12M28.5 8.5a12 12 0 0 1 0 19" stroke="#432C7A" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          </svg>
+          <svg id="icon-sound-off" viewBox="0 0 36 36" width="28" height="28" class="hidden">
+            <path d="M7 14h6l8-7v22l-8-7H7a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" fill="#D94B38"/>
+            <path d="M25 14l7 8M32 14l-7 8" stroke="#D94B38" stroke-width="3.4" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Amusement Park Plaza: 4 Attraction Pavilions + Welcoming Bear Mascot -->
+      <main class="park-map-stage">
+        <div class="park-plaza-grid">
+          <!-- Pavilion 1: Balloon Shop -->
+          <button class="park-pavilion-btn pavilion-balloons" data-target="colors" aria-label="Balloon Shop: Colors, Letters and Numbers">
+            <div class="pavilion-art" id="ride-art-colors"></div>
+            <div class="pavilion-label-pill">
+              <span class="pavilion-label-text">BALLOONS</span>
+              <span class="pavilion-mini-icons" aria-hidden="true">🎨🔤🔢</span>
+            </div>
+          </button>
+
+          <!-- Pavilion 2: ABC Safari Cards -->
+          <button class="park-pavilion-btn pavilion-abc" data-target="abc" aria-label="ABC Animal Cards">
+            <div class="pavilion-art" id="ride-art-abc"></div>
+            <div class="pavilion-label-pill">
+              <span class="pavilion-label-text">A B C</span>
+            </div>
+          </button>
+
+          <!-- Pavilion 3: Shapes Park Ride -->
+          <button class="park-pavilion-btn pavilion-shapes" data-target="shapes" aria-label="Shapes Express Ride">
+            <div class="pavilion-art" id="ride-art-shapes"></div>
+            <div class="pavilion-label-pill">
+              <span class="pavilion-label-text">SHAPES</span>
+            </div>
+          </button>
+
+          <!-- Pavilion 4: Letter Paint Studio -->
+          <button class="park-pavilion-btn pavilion-trace" data-target="trace" aria-label="Draw Letters A to Z">
+            <div class="pavilion-art" id="ride-art-trace"></div>
+            <div class="pavilion-label-pill">
+              <span class="pavilion-label-text">DRAW A–Z</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Park Entrance Mascot Bear Waving HI! -->
+        <div class="park-mascot-station" id="park-mascot-station">
+          <div class="mascot-character" id="hub-mascot-svg" role="button" tabindex="0" aria-label="Wave to Sunny Bear"></div>
+          <button class="mascot-hi-pill" id="btn-mascot-hello" aria-label="Say Hi">
+            <span class="hi-pill-text">HI! 👋</span>
+            <div class="hand-hint hub-hand-hint" id="hub-hand-hint" aria-hidden="true"></div>
+          </button>
+        </div>
+      </main>
+    </section>
+
+    <!-- ==================== SCREEN 1: ABC 3D FLIPPING ANIMAL CARDS ==================== -->
+    <section id="screen-abc" class="screen screen-abc" aria-label="ABC Animal Flip Cards">
+      <header class="game-topbar">
+        <button class="home-park-btn" data-go-home aria-label="Back to Park">
+          <svg viewBox="0 0 44 44" width="34" height="34" aria-hidden="true">
+            <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+            <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Large 3D Flipping A–Z Animal Cards Grid -->
+      <div class="abc-flip-grid" id="abc-flip-grid" aria-label="Flip Letters A to Z"></div>
+
+      <!-- Peeking Companion Mascot -->
+      <div class="corner-companion" id="abc-companion"></div>
+    </section>
+
+    <!-- ==================== SCREEN 2: BALLOON POP (COLORS / ABC / 123) ==================== -->
+    <section id="screen-colors" class="screen screen-colors" aria-label="Balloon Pop Game">
+      <header class="game-topbar">
+        <button class="home-park-btn" data-go-home aria-label="Back to Park">
+          <svg viewBox="0 0 44 44" width="34" height="34" aria-hidden="true">
+            <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+            <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+          </svg>
+        </button>
+
+        <!-- 3-Way Mode Switcher: Colors / Letters / Numbers -->
+        <div class="mode-switch-pill" role="group" aria-label="Balloon Mode">
+          <button class="switch-opt active" data-balloon-mode="colors" aria-label="Colors">🎨</button>
+          <button class="switch-opt" data-balloon-mode="letters" aria-label="Letters">ABC</button>
+          <button class="switch-opt" data-balloon-mode="numbers" aria-label="Numbers">123</button>
+        </div>
+
+        <!-- Progress Pill -->
+        <div class="progress-pill" id="balloon-progress-pill"></div>
+      </header>
+
+      <!-- Full-Height Balloon Playfield -->
+      <div class="balloon-playfield" id="balloon-playfield"></div>
+
+      <!-- Peeking Companion Mascot -->
+      <div class="corner-companion right" id="colors-companion"></div>
+    </section>
+
+    <!-- ==================== SCREEN 3: SILKY-SMOOTH LETTER TRACING ==================== -->
+    <section id="screen-trace" class="screen screen-trace" aria-label="Draw Letters A to Z">
+      <header class="game-topbar">
+        <button class="home-park-btn" data-go-home aria-label="Back to Park">
+          <svg viewBox="0 0 44 44" width="34" height="34" aria-hidden="true">
+            <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+            <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="trace-stage">
+        <!-- SVG Letter Tracing Canvas -->
+        <div class="trace-board" id="trace-board">
+          <svg id="trace-svg" class="trace-svg" viewBox="0 0 400 400" aria-label="Trace Letter Area"></svg>
+          <div class="hand-hint trace-hand-hint hidden" id="trace-hand-hint" aria-hidden="true"></div>
+        </div>
+
+        <!-- Animal Reward Card Revealed on Completion -->
+        <div class="trace-reward-badge hidden" id="trace-reward-badge">
+          <div class="trace-reward-art" id="trace-reward-art"></div>
+          <div class="trace-reward-word" id="trace-reward-word">Alligator</div>
+        </div>
+      </div>
+
+      <!-- Scrollable A–Z Letter Selector Strip -->
+      <footer class="trace-letter-strip" id="trace-letter-strip" aria-label="Choose Letter"></footer>
+
+      <!-- Peeking Puppy Mascot -->
+      <div class="corner-companion" id="trace-companion"></div>
+    </section>
+
+    <!-- ==================== SCREEN 4: SHAPES PARK RIDE ==================== -->
+    <section id="screen-shapes" class="screen screen-shapes" aria-label="Shapes Park Ride">
+      <header class="game-topbar">
+        <button class="home-park-btn" data-go-home aria-label="Back to Park">
+          <svg viewBox="0 0 44 44" width="34" height="34" aria-hidden="true">
+            <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+            <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+          </svg>
+        </button>
+
+        <div class="progress-pill" id="shapes-progress-pill"></div>
+      </header>
+
+      <!-- Full-Screen Shapes Interactive Stage -->
+      <div class="shapes-stage" id="shapes-stage"></div>
+
+      <!-- Peeking Companion Mascot -->
+      <div class="corner-companion" id="shapes-companion"></div>
+    </section>
+
+    <!-- ==================== FULLSCREEN CELEBRATION MODAL ==================== -->
+    <div id="celebration-overlay" class="celebration-overlay hidden" role="dialog" aria-modal="true" aria-label="Celebration">
+      <div class="celebration-card" id="celebration-card">
+        <div class="celebration-sunburst" aria-hidden="true"></div>
+        <div class="celebration-badge" id="celebration-badge"></div>
+        <h2 class="celebration-title" id="celebration-title">AWESOME!</h2>
+        <div class="celebration-actions">
+          <button class="celebration-btn replay" id="btn-celebration-replay" aria-label="Play Again">
+            <svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">
+              <path d="M36 17A14 14 0 1 0 38 29" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <polygon points="37,6 44,20 29,19" fill="#FFFFFF"/>
+            </svg>
+          </button>
+          <button class="celebration-btn home" id="btn-celebration-home" aria-label="Back to Park">
+            <svg viewBox="0 0 44 44" width="38" height="38" aria-hidden="true">
+              <path d="M8 21L22 9l14 12v14a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V21z" fill="#FFB800"/>
+              <path d="M6 22L22 8l16 14" stroke="#FFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <rect x="18" y="25" width="8" height="13" rx="4" fill="#FF5A36"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./illustrations.js"></script>
+  <script src="./audio-engine.js"></script>
+  <script src="./game-balloons.js"></script>
+  <script src="./game-shapes.js"></script>
+  <script src="./game-abc-trace.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
